@@ -1,0 +1,17 @@
+metis_extract: $(DISTDIR)/metis-${METIS_VERSION}.tar.gz
+	${EXTRACT_COMAND} -d ${WRKDIR} $< ;\
+	cd ${WRKDIR}/metis-${METIS_VERSION};\
+	patch -p1 < ../../patches/metis-${METIS_VERSION}.patch ;\
+	patch -p0 < ../../patches/metis-${METIS_VERSION}.Makefile.in.patch
+
+metis_configure:
+	@echo "Nothing todo!"
+
+metis_build:
+	cd ${WRKDIR}/metis-${METIS_VERSION}; make
+
+metis_install:
+	mkdir ${PREFIX}/metis ;\
+	mkdir ${METIS_BASE} ;\
+	mkdir ${METIS_BASE}/lib ;\
+	cp ${WRKDIR}/metis-${METIS_VERSION}/libmetis.a ${METIS_BASE}/lib

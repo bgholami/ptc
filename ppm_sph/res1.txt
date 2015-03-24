@@ -1,0 +1,179 @@
+#-------------------------------------------------------------------------------
+#  Sample control file for ppm_client
+#
+#  Edit the settings below
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+#  Geometry
+#       DIMENSIONS:  --dim {value}
+#                   2 <= {value} <= 2 
+#          SIMCASE:  --simcase {value}
+#                   1 <= {value} <= 2 
+#       MIN_DOMAIN:  --min_domain {v1,v2,...}
+#       MAX_DOMAIN:  --max_domain {v1,v2,...}
+#    BC-X: min/max:  --boundarycondition-x {v1,v2,...}
+#                   1 <= {v1,v2,...} <= 10 
+#    BC-Y: min/max:  --boundarycondition-y {v1,v2,...}
+#                   1 <= {v1,v2,...} <= 10 
+#    WALLVEL_X_MIN:  --wallvel-x-min {v1,v2,...}
+#    WALLVEL_X_MAX:  --wallvel-x-max {v1,v2,...}
+#    WALLVEL_Y_MIN:  --wallvel-y-min {v1,v2,...}
+#    WALLVEL_Y_MAX:  --wallvel-y-max {v1,v2,...}
+#-------------------------------------------------------------------------------
+         ndim = 2
+      simcase = 1
+   min_domain =   0.000000000000000E+000,   0.000000000000000E+000 
+   max_domain =   1.000000000000000E-003,   1.000000000000000E-003 
+         bc-x =            1,            1 
+         bc-y =            7,            7 
+wallvel-x-min =   0.000000000000000E+000,   0.000000000000000E+000 
+wallvel-x-max =   0.000000000000000E+000,   0.000000000000000E+000 
+wallvel-y-min =   0.000000000000000E+000,   0.000000000000000E+000 
+wallvel-y-max =   0.000000000000000E+000,   0.000000000000000E+000 
+
+#-------------------------------------------------------------------------------
+#  Physics
+#        BODYFORCE: -g {v1,v2,...},  --bodyforce {v1,v2,...}
+#       LENGTH_REF:  --length-reference {value}
+#                   0.000000000000000E+000 <= {value} 
+#      DENSITY_REF:  --density-reference {value}
+#                   0.000000000000000E+000 <= {value} 
+#     VELOCITY_REF:  --velocity-reference {value}
+#                   0.000000000000000E+000 <= {value} 
+#         N_PHASES:  --n-phases {value}
+#                   1 <= {value} <= 1 
+#-------------------------------------------------------------------------------
+  bodyforce =   1.000000000000000E-002,   0.000000000000000E+000 
+ length_ref = 5.000000000000000E-004
+density_ref = 1000.00000000000
+    vel_ref = 3.125000000000000E-004
+   N_PHASES = 1
+
+#-------------------------------------------------------------------------------
+#  PHASE 1
+#   PHASE_NAME (1):  --phase1-name {value}
+#   PHASE_TYPE (1):  --phase1-type {value}
+#  PHASE_DENSITY (:  --phase1-density {value}
+#  PHASE_VISCOSITY:  --phase1-dynvisc {value}
+#  PHASE_GAMMA (1):  --phase1-gamma {value}
+#                   0.000000000000000E+000 <= {value} 
+#  PHASE_DELTADENS:  --phase1-deltadens {value}
+#                   0.000000000000000E+000 <= {value} 
+#  BACKGROUNDPRESS:  --pressre-background {value}
+#                   0.000000000000000E+000 <= {value} 
+#  PHASE_OUTPUT(1):  --phase1-output {value}
+#                   0 <= {value} <= 1 
+#-------------------------------------------------------------------------------
+            NAME = FLUID1
+            TYPE = 2
+         DENSITY = 1000.00000000000
+        VISC_DYN = 1.000000000000000E-003
+           GAMMA = 7.00000000000000
+      DELTA_DENS = 1.000000000000000E-002
+PRESS_BACKGROUND = 1.00000000000000
+          OUTPUT = 1
+
+#-------------------------------------------------------------------------------
+#  SPH parameter
+#           cutoff:  --cutoff {value}
+#                   0.000000000000000E+000 <= {value} 
+#  RATIO-CUTOFF-SM:  --ratio-cutoff_smoothing {value}
+#  RATIO-SMOOTHING:  --ratio_smoothing_dx {value}
+#       SKINFACTOR:  --verlet-skinfactor {value}
+#                   0.000000000000000E+000 <= {value} <= 3.00000000000000 
+#-------------------------------------------------------------------------------
+                cutoff = 5.000000000000000E-002
+ratio_cutoff_smoothing = 3.00000000000000
+    ratio_smoothing_dx = 1.00000000000000
+     verlet_skinfactor = 0.100000000000000
+
+#-------------------------------------------------------------------------------
+#  NUMERICS
+#  SUB-TO-PROC ASS:  --choice_assign {value}
+#                   {value} <= 6 
+#   DOMAIN DECOMP.:  --choice_decomp {value}
+#                   {value} <= 13 
+#-------------------------------------------------------------------------------
+choice_assign = 1
+choice_decomp = 3
+
+#-------------------------------------------------------------------------------
+#  SWITCHES
+#     SHOW TIMINGS:  --switch_showtimings
+#-------------------------------------------------------------------------------
+switch_showtimings = F
+
+#-------------------------------------------------------------------------------
+#  TIMESTEPPING
+#      TIME-SCHEME:  --timesteppingscheme {value}
+#                   1 <= {value} <= 1 
+#       START-TIME:  --starttime {value}
+#         END-TIME:  --endtime {value}
+#-------------------------------------------------------------------------------
+timesteppingscheme = 1
+        Start-Time = 0.000000000000000E+000
+          End-Time = 0.500000000000000
+
+#-------------------------------------------------------------------------------
+#  Output
+#  Switch output t:  --choice_output {value}
+#                   0 <= {value} <= 3 
+#     Output times:  --time-output {value}
+#  Output non-dim.:  --output_nondim
+#  output_velocity:  --output_velocity
+#         output_h:  --output-h
+#   output_density:  --output_density
+#  output_pressure:  --output_pressure
+#      output_mass:  --output_mass
+#    output_volume:  --output_volume
+#     output_phase:  --output_phase
+#        output_id:  --output_id
+#      output_rank:  --output_rank
+#-------------------------------------------------------------------------------
+  choice_output = 1
+     timeoutput = 1.000000000000000E-002
+  output_nondim = F
+output_velocity = T
+       output_h = F
+ output_density = F
+output_pressure = F
+    output_mass = F
+  output_volume = F
+   output_phase = F
+      output_id = F
+    output_rank = T
+
+#-------------------------------------------------------------------------------
+#  LOGGING
+#    FREQLOGOUTPUT:  --freqlogoutput {value}
+#                   1 <= {value} 
+#       MAXITSTEPS:  --maxitsteps {value}
+#                   1 <= {value} 
+#        SPH_DEBUG:  --sph_debug {value}
+#                   0 <= {value} <= 2 
+#        PPM_DEBUG:  --ppm_debug {value}
+#                   0 <= {value} <= 2 
+#-------------------------------------------------------------------------------
+freqlogoutput = 100
+   MAXITSTEPS = 1000000
+    sph_debug = 0
+    ppm_debug = 0
+
+#-------------------------------------------------------------------------------
+#  RESTART
+#   choice_restart:  --choice_restart {value}
+#                   0 <= {value} <= 2 
+#      reset_steps:  --restart_reset_steps
+#   reset_velocity:  --restart_reset_velocity
+#      freqrestart:  --freqrestart {value}
+#-------------------------------------------------------------------------------
+        choice_restart = 0
+   restart_reset_steps = F
+restart_reset_velocity = F
+           freqrestart = 10000000
+rank 1 in job 233  mitsuko_52158   caused collective abort of all ranks
+  exit status of rank 1: return code 1 
+rank 0 in job 233  mitsuko_52158   caused collective abort of all ranks
+  exit status of rank 0: return code 1 

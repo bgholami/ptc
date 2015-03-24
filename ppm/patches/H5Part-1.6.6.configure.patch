@@ -1,0 +1,20 @@
+--- configure	2012-09-03 14:14:32.242113859 +0200
++++ configure-notests	2012-09-03 14:14:55.335308041 +0200
+@@ -2316,7 +2316,7 @@
+ 
+ 
+ BUILD_LIBS='libH5Part'
+-BUILD_TESTS='test'
++BUILD_TESTS=''
+ 
+ ###############################################################################
+ ################# --enable-xxx and --with-xxx Argument ########################
+@@ -4078,7 +4078,7 @@
+ echo "${ECHO_T}yes" >&6; }
+ 	LIB_FORTRAN="libH5PartF.la"
+         BUILD_LIBS="$BUILD_LIBS libH5PartF"
+-	BUILD_TESTS="$BUILD_TESTS testf"
++	BUILD_TESTS="$BUILD_TESTS"
+ 
+ 	if test "X$USE_PARALLEL" = "Xyes"; then
+ 		ac_ext=${ac_fc_srcext-f}

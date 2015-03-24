@@ -1,0 +1,80 @@
+[0] (initialize) : PROGRAM STARTED ON: mitsuko
+[0] (initialize) : using the command: ./ppmsph_2 example-2d.cfg --choice-restart
+[0] (initialize) : RUNNING WITH     4 Processors
+[0] (initialize) : ctrlfile ok
+[0] (sph_init) : Using double precision
+[0] (dump_setup) :                 Interactions symmetric:  T
+[0] (dump_setup) :                                  isymm:  1
+[0] (dump_setup) :                                SIMCASE:  1
+[0] (dump_setup) :                                 CUTOFF:         0.0001500000
+[0] (dump_setup) :                        SMOOTHINGLENGTH:         0.0000500000
+[0] (dump_setup) :                      PARTICLE SPACING :         0.0000500000
+[0] (dump_setup) :                      VERLET_SKIN / DX :         0.1000000000
+[0] (dump_setup) :                           Sound speeds:  FLUID1
+[0] (dump_setup) :                               Cs (vel):      0.31250E-02
+[0] (dump_setup) :                              Cs (visc):      0.79057E-02
+[0] (dump_setup) :                             Cs (force):      0.22361E-01
+[0] (dump_setup) :                          Max. Cs (used):      0.22361E-01
+[0] (dump_setup) :                             Mach number:      0.13975E-01
+[0] (dump_setup) :                         Reynolds number:      0.15625E+00
+[0] (dump_setup) :                      Equation of state:  FLUID1
+[0] (dump_setup) :                                     p0:      0.71429E-01
+[0] (dump_setup) :                           b (constant):      0.71429E-01
+[0] (dump_setup) :                              Timesteps:  FLUID1
+[0] (dump_setup) :                               dt (vel):      0.55131E-03
+[0] (dump_setup) :                              dt (visc):      0.31250E-03
+[0] (dump_setup) :                             dt (force):      0.17678E-01
+[0] (dump_setup) :                   Min. timestep (used):         0.0003125000
+[0] (create_particles) :                             Initial dx:         0.0000500000
+[0] (create_particles) :                    Initial points in x:         20
+[0] (create_particles) :                    Initial points in y:         20
+[0] (create_particles) :                    Comp. box size in x:         0.0010000000
+[0] (create_particles) :                    Comp. box size in y:         0.0010000000
+[0] (create_particles) :         Total number of lattice points:        400
+[0] (create_particles) : __________________________________________
+[0] (create_particles) :             Global number of particles:        400
+[0] (create_particles) : __________________________________________
+[0] (create_particles) : Initialized particles locally on Proc.     0:             100
+[0] (main) : PPM MAKE TOPOLOGY SUCCESSFUL!
+[0] (main) : Mapped on topology!
+[0] (main) : Topology check ok!
+[0] (main) : No duplicates found
+[0] (init_state) : mapping getghost successfull
+[0] (init_state) : create neighlist_vlist done
+[0] (init_state) : Initial velocity defined
+[0] (init_state) : map_ghost_push successfull
+[0] (init_state) : Forces computed
+[0] (main) : Initial state defined
+[0] (write_output_ascii) :                 Output written to file: example-2d/particles-000000.out
+[0] (run_steps) :  ----------------------------------
+[0] (run_steps) :  |  Starting main time loop...
+[0] (run_steps) :  ----------------------------------
+[0] (run_steps) :                    Number of timesteps:       1600
+[0] (run_steps) :                               Timestep:         0.0003125000
+[0] (run_steps) :               Start time of simulation:         0.0000000000
+[0] (run_steps) :                               End time:         0.5000000000
+[0] (write_logoutput) : _________________________________________________________________
+[0] (write_logoutput) : Completed steps:            1 (of         1600) with dt:     0.3125000E-03
+[0] (write_logoutput) :          Avg. time for a time step (s):         0.0022952557
+[0] (write_logoutput) : Performance (Time/Particle/Iteration) :     0.2295256E-04
+[0] (write_logoutput) : WCT to finish (approx.) example-2d.cfg :       0.00 h and       0.06 min.
+[0] (write_logoutput) : Calculated time:     0.3125000E-03 of     0.5000000E+00 sec.
+[0] (write_output_ascii) :                 Output written to file: example-2d/particles-000032.out
+[0] (write_output_ascii) :                 Output written to file: example-2d/particles-000064.out
+[0] (write_output_ascii) :                 Output written to file: example-2d/particles-000096.out
+[0] (write_logoutput) : _________________________________________________________________
+[0] (write_logoutput) : Completed steps:          100 (of         1600) with dt:     0.3125000E-03
+[0] (write_logoutput) :          Avg. time for a time step (s):         0.0024846351
+[0] (write_logoutput) : Performance (Time/Particle/Iteration) :     0.2484635E-04
+[0] (write_logoutput) : WCT to finish (approx.) example-2d.cfg :       0.00 h and       0.06 min.
+[0] (write_logoutput) : Calculated time:     0.3125000E-01 of     0.5000000E+00 sec.
+[0] (write_output_ascii) :                 Output written to file: example-2d/particles-000128.out
+[0] (write_output_ascii) :                 Output written to file: example-2d/particles-000160.out
+[0] (write_output_ascii) :                 Output written to file: example-2d/particles-000192.out
+[0] (write_logoutput) : _________________________________________________________________
+[0] (write_logoutput) : Completed steps:          200 (of         1600) with dt:     0.3125000E-03
+[0] (write_logoutput) :          Avg. time for a time step (s):         0.0024427184
+[0] (write_logoutput) : Performance (Time/Particle/Iteration) :     0.2442718E-04
+[0] (write_logoutput) : WCT to finish (approx.) example-2d.cfg :       0.00 h and       0.06 min.
+[0] (write_logoutput) : Calculated time:     0.6250000E-01 of     0.5000000E+00 sec.
+[0] (write_output_ascii) :                 Output written to file: example-2d/particles-000224.out

@@ -1,0 +1,146 @@
+--- src/map/ppm_map_part_ghost_get.f	2010-11-12 17:25:10.888051004 +0100
++++ ../../ppmcore/libppm/src/map/ppm_map_part_ghost_get.f	2011-07-11 20:20:29.046848389 +0200
+@@ -143,8 +143,10 @@
+       INTEGER               :: nlist1,nlist2,nghost,nghostplus
+       INTEGER               :: ipart,sendrank,recvrank
+       INTEGER               :: iopt,iset,ibuffer
+-      REAL(MK), DIMENSION(:,:), POINTER :: xt  ! position of potential ghosts
+-      REAL(MK), DIMENSION(:,:), POINTER :: xt_offset ! offset of pot. ghosts
++      REAL(MK), DIMENSION(:,:), POINTER :: xt  => NULL()
++      ! position of potential ghosts
++      REAL(MK), DIMENSION(:,:), POINTER :: xt_offset => NULL()
++      ! offset of pot. ghosts
+       REAL(MK)                      :: xminf,yminf,zminf ! full domain
+       REAL(MK)                      :: xmaxf,ymaxf,zmaxf ! full domain
+       REAL(MK)                      :: xmini,ymini,zmini ! inner domain
+@@ -155,7 +157,7 @@
+       LOGICAL                       :: valid
+       CHARACTER(ppm_char)              :: mesg
+       ! number of periodic directions: between 0 and ppm_dim
+-      TYPE(ppm_t_topo),POINTER      :: topo
++      TYPE(ppm_t_topo),POINTER      :: topo => NULL()
+       !-------------------------------------------------------------------------
+       !  Externals 
+       !-------------------------------------------------------------------------
+@@ -563,6 +565,9 @@
+             xmini = topo%min_physd(1) + ghostsize
+ #endif
+             k     = nghostplus
++          
++            
++
+             DO i=1,nghostplus
+                !----------------------------------------------------------------
+                !  first those at the west boundary 
+@@ -573,10 +578,10 @@
+                   xt(1,k)   = xt(1,i) + len_phys(1)
+                   xt(2,k)   = xt(2,i)
+                   xt_offset(1,k) = len_phys(1)
+-                  xt_offset(2,k) = 0.0_MK
++                  xt_offset(2,k) = xt_offset(2,i)
+                   IF (ppm_dim.EQ.3) THEN
+                      xt(3,k)   = xt(3,i)
+-                     xt_offset(3,k) = 0.0_MK
++                     xt_offset(3,k) = xt_offset(3,i)
+                   ENDIF 
+                ENDIF
+             ENDDO
+@@ -598,10 +603,10 @@
+                      xt(1,k)   = xt(1,i) - len_phys(1)
+                      xt(2,k)   = xt(2,i)
+                      xt_offset(1,k) = -len_phys(1)
+-                     xt_offset(2,k) = 0.0_MK
++                     xt_offset(2,k) = xt_offset(2,i)
+                      IF (ppm_dim.EQ.3) THEN
+                         xt(3,k)   = xt(3,i)
+-                        xt_offset(3,k) = 0.0_MK
++                        xt_offset(3,k) = xt_offset(3,i)
+                      ENDIF 
+                   ENDIF
+                ENDDO
+@@ -640,6 +645,13 @@
+      &              'ighost',__LINE__,info)
+                 GOTO 9999
+             ENDIF
++            
++            !-------------------------------------------------------------------
++            !  clear out the new segment of xt_offset to be able to copy the
++            !  correct values from the previous loop through xt_offset
++            !-------------------------------------------------------------------
++            FORALL(i=1:ppm_dim,j=nghostplus+1:2*nghostplus) &
++            &      xt_offset(i,j) = 0.0_MK
+ 
+             !-------------------------------------------------------------------
+             !  copy periodic ghosts in the y-direction
+@@ -661,11 +673,11 @@
+                   ighost(k) = ighost(i)
+                   xt(1,k)   = xt(1,i) 
+                   xt(2,k)   = xt(2,i) + len_phys(2)
+-                  xt_offset(1,k) = 0.0_MK
++                  xt_offset(1,k) = xt_offset(1,i)
+                   xt_offset(2,k) = len_phys(2)
+                   IF (ppm_dim.EQ.3) THEN
+                      xt(3,k)   = xt(3,i)
+-                     xt_offset(3,k) = 0.0_MK
++                     xt_offset(3,k) = xt_offset(3,i)
+                   ENDIF 
+                ENDIF
+             ENDDO
+@@ -686,11 +698,11 @@
+                      ighost(k) = ighost(i)
+                      xt(1,k)   = xt(1,i)
+                      xt(2,k)   = xt(2,i) - len_phys(2)
+-                     xt_offset(1,k) = 0.0_MK
++                     xt_offset(1,k) = xt_offset(1,i)
+                      xt_offset(2,k) = -len_phys(2)
+                      IF (ppm_dim.EQ.3) THEN
+                         xt(3,k)   = xt(3,i)
+-                        xt_offset(3,k) = 0.0_MK
++                        xt_offset(3,k) = xt_offset(3,i)
+                      ENDIF 
+                   ENDIF
+                ENDDO
+@@ -735,6 +747,12 @@
+      &                 'ighost',__LINE__,info)
+                    GOTO 9999
+                ENDIF
++               !----------------------------------------------------------------
++               !  clear out the new segment of xt_offset to be able to copy the
++               !  correct values from the previous loop through xt_offset
++               !----------------------------------------------------------------
++               FORALL(i=1:ppm_dim,j=nghostplus+1:2*nghostplus) &
++               &      xt_offset(i,j) = 0.0_MK
+ 
+                !----------------------------------------------------------------
+                !  copy periodic ghosts in the z-direction
+@@ -758,8 +776,8 @@
+                      xt(2,k)   = xt(2,i)
+                      xt(3,k)   = xt(3,i) + len_phys(3)
+ 
+-                     xt_offset(1,k) = 0.0_MK
+-                     xt_offset(2,k) = 0.0_MK
++                     xt_offset(1,k) = xt_offset(1,i)
++                     xt_offset(2,k) = xt_offset(2,i)
+                      xt_offset(3,k) = len_phys(3)
+                   ENDIF
+                ENDDO
+@@ -781,6 +799,10 @@
+                         xt(1,k)   = xt(1,i)
+                         xt(2,k)   = xt(2,i) 
+                         xt(3,k)   = xt(3,i) - len_phys(3)
++
++                        xt_offset(1,k) = xt_offset(1,i)
++                        xt_offset(2,k) = xt_offset(2,i)
++                        xt_offset(3,k) = -len_phys(3)
+                      ENDIF
+                   ENDDO
+                ENDIF 
+@@ -953,7 +975,7 @@
+          !  flag all ghosts as not yet taken
+          !----------------------------------------------------------------------
+          DO j=1,nghostplus
+-            lghost(:) = .TRUE.
++            lghost(j) = .TRUE.
+          ENDDO
+ 
+          !----------------------------------------------------------------------

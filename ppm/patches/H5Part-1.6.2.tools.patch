@@ -1,0 +1,40 @@
+diff -c tools/h5pAttrib.cc tools-updated/h5pAttrib.cc
+*** tools/h5pAttrib.cc	2010-02-16 18:08:11.000000000 +0100
+--- tools-updated/h5pAttrib.cc	2011-07-12 11:34:54.245911230 +0200
+***************
+*** 160,166 ****
+      }
+      else
+      {
+!         register char *cp;    /* pointer into current token */
+  
+          /* short command line option */
+          opt_opt = argv[opt_ind][sp];
+--- 160,166 ----
+      }
+      else
+      {
+!         register const char *cp;    /* pointer into current token */
+  
+          /* short command line option */
+          opt_opt = argv[opt_ind][sp];
+diff -c tools/h5pToGNUplot.cc tools-updated/h5pToGNUplot.cc
+*** tools/h5pToGNUplot.cc	2010-02-16 18:08:11.000000000 +0100
+--- tools-updated/h5pToGNUplot.cc	2011-07-12 11:34:43.697911230 +0200
+***************
+*** 155,161 ****
+      }
+      else
+      {
+!         register char *cp;    /* pointer into current token */
+  
+          /* short command line option */
+          opt_opt = argv[opt_ind][sp];
+--- 155,161 ----
+      }
+      else
+      {
+!         register const char *cp;    /* pointer into current token */
+  
+          /* short command line option */
+          opt_opt = argv[opt_ind][sp];

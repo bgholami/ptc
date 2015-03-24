@@ -1,0 +1,9 @@
+PREFIX        = /home/adami/prefix-intel-12
+MPIFC	        = $(PREFIX)/mpich2/$(MPICH2_VERSION)/bin/mpif90
+MPILIB        = $(PREFIX)/mpich2/$(MPICH2_VERSION)/lib
+PPMDIR        = ${PREFIX}/ppm/$(PPM_VERSION)
+MAKEDEPF90DIR = ${PREFIX}/makedepf90/$(MAKEDEPF90_VERSION)
+HDF5DIR       = $(PREFIX)/hdf5/$(HDF5_VERSION)
+H5PARTDIR     = $(PREFIX)/h5part/$(H5PART_VERSION)
+METISDIR      = ${PREFIX}/metis/${METIS_VERSION}
+ZLIBDIR       = $(PREFIX)/zlib/$(ZLIB_VERSION)

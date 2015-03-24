@@ -1,0 +1,22 @@
+hdf5_extractserial:
+	${EXTRACT_COMAND} -d ${WRKDIR}-serial ${DISTDIR}/hdf5-${HDF5_VERSION}.tar.gz
+
+hdf5_configureserial:
+	cd ${WRKDIR}-serial/hdf5-${HDF5_VERSION} ; \
+	FC=$(FC) FCFLAGS="$(FCFLAGS)" \
+	CC=$(CC) CFLAGS="$(CFLAGS)" \
+	CXX=${CXX} \
+	LDFLAGS="${LDFLAGS}" \
+	./configure --prefix="${PREFIX}/hdf5serial/${HDF5_VERSION}" \
+	--with-zlib=${PREFIX}/zlib/${ZLIB_VERSION} \
+	--disable-fortran --disable-dependency-tracking \
+	--disable-shared --disable-cxx --enable-parallel=no \
+
+hdf5_buildserial: 
+	cd ${WRKDIR}-serial/hdf5-${HDF5_VERSION}; \
+	make ${BUILD_MAKE_FLAGS}
+
+hdf5_installserial:
+	cd ${WRKDIR}-serial/hdf5-${HDF5_VERSION}; \
+	make install
+

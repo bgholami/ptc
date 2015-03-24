@@ -1,0 +1,24 @@
+ZLIB_VERSION       = 1.2.5
+HDF5_VERSION       = 1.8.10-snap0
+H5PART_VERSION     = 1.6.6
+METIS_VERSION      = 4.0
+MAKEDEPF90_VERSION = 2.8.8
+PPM_VERSION        = 1.2.2
+
+PREFIX		= /home/hpc/pr32ma/lu96mah2/prefix
+
+ZLIB_BASE       = ${PREFIX}/zlib/${ZLIB_VERSION}
+HDF5_BASE       = ${PREFIX}/hdf5/${HDF5_VERSION}
+H5PART_BASE     = ${PREFIX}/h5part/${H5PART_VERSION}
+METIS_BASE      = ${PREFIX}/metis/${METIS_VERSION}
+PPM_BASE        = ${PREFIX}/ppm/${PPM_VERSION}
+
+#MPI_BASE = system one used here
+#MPI_LIB = system one "-L${MPI_BASE}/lib"
+#MPI_INC = system one
+
+MPIFC  = ${MPI_BASE}/bin/mpif90
+MPICC  = ${MPI_BASE}/bin/mpicc
+MPICXX = ${MPI_BASE}/bin/mpicxx
+
+BUILD_MAKE_FLAGS     =    -j 8

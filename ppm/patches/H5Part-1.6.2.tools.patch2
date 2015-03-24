@@ -1,0 +1,27 @@
+*** test/testf.F90	Thu Dec  1 18:08:12 2011
+--- test/testf.F90.new	Thu Dec  1 18:07:56 2011
+***************
+*** 7,17 ****
+    include 'H5PartF.h'
+  
+  #ifdef PARALLEL_IO
+!   integer :: comm, ierr, i
+!   integer*8 :: file_id, status, npoints
+  #endif
+    real*8, allocatable :: x(:),y(:),z(:),px(:),py(:),pz(:)
+    integer*8, allocatable :: id(:)
+  
+  #ifdef PARALLEL_IO
+    call MPI_INIT(ierr)
+--- 7,17 ----
+    include 'H5PartF.h'
+  
+  #ifdef PARALLEL_IO
+!   integer :: comm, ierr
+  #endif
+    real*8, allocatable :: x(:),y(:),z(:),px(:),py(:),pz(:)
+    integer*8, allocatable :: id(:)
++   integer*8 :: file_id, status, npoints, i
+  
+  #ifdef PARALLEL_IO
+    call MPI_INIT(ierr)

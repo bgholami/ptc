@@ -1,0 +1,35 @@
+mpich2_extract: $(DISTDIR)/mpich2-$(MPICH2_VERSION).tar.gz
+	${EXTRACT_COMAND} -d ${WRKDIR} $<
+
+mpich2_configure:
+	cd ${WRKDIR}/mpich2-${MPICH2_VERSION} ; \
+	./configure --prefix=${PREFIX}/mpich2/${MPICH2_VERSION} \
+	FC=${FC} FCFLAGS="${FCFLAGS}" \
+	CC=${CC} CFLAGS="-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 ${CFLAGS}" \
+	CXX=${CXX} CXXFLAGS="${CXXFLAGS}" \
+	--enable-fc --enable-fast=defopt \
+	--enable-timer-type=gettimeofday --with-mpe \
+	RSHCOMMAND=/usr/bin/ssh \
+	--disable-dependencies 
+
+#	./configure  --prefix=$(PREFIX)/mpich2/$(MPICH2_VERSION) \
+#	F90FLAGS="${FCFLAGS}" F90=${FC} F77=${FC} FFLAGS="${FCFLAGS}" \
+#	FC=${FC} FCFLAGS="${FCFLAGS}" \
+#	CC=${CC} CFLAGS="-D_FILE_OFFSET_BITS=64 ${CFLAGS}" \
+#	CXX=${CXX} CXXFLAGS="${CXXFLAGS}" \
+#	--enable-fc --enable-fast=O2 \
+#	RSHCOMMAND=/usr/bin/ssh \
+#	--disable-dependencies 
+
+mpich2_build:
+	cd ${WRKDIR}/mpich2-${MPICH2_VERSION} ; \
+	make 
+#${BUILD_MAKE_FLAGS}
+
+mpich2_install:
+	cd ${WRKDIR}/mpich2-${MPICH2_VERSION} ; \
+	make install
+
+mpich2_clean:
+	-rm -rf ${WRKDIR}/mpich2-${MPICH2_VERSION}
+

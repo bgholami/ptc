@@ -1,0 +1,9 @@
+PREFIX		=	/home/dguerster/prefix-O3
+MPIPATH		=	$(PREFIX)/mpich2/$(MPICH2_VERSION)
+ZLIBPATH	=	$(PREFIX)/zlib/$(ZLIB_VERSION)
+HDF5PATH	=	${PREFIX}/hdf5/${HDF5_VERSION}
+METISPATH	=	${PREFIX}/metis/${METIS_VERSION}
+PPMPATH		=	${PREFIX}/ppm/${PPM_VERSION}
+MPIFC		=	${MPIPATH}/bin/mpif90
+MPICC		=	${MPIPATH}/bin/mpicc
+MPICXX		=	${MPIPATH}/bin/mpicxx

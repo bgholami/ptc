@@ -1,0 +1,18 @@
+hdf5_extract:
+	${EXTRACT_COMAND} -d ${WRKDIR} ${DISTDIR}/hdf5-${HDF5_VERSION}.tar.gz
+
+hdf5_configure:
+	cd ${WRKDIR}/hdf5-${HDF5_VERSION} ; \
+	CC=${MPICC} ./configure --prefix="$(HDF5_BASE)" \
+	--with-zlib=$(ZLIB_BASE) \
+	--disable-fortran --disable-dependency-tracking \
+	--disable-shared --disable-cxx --enable-parallel
+
+hdf5_build:
+	cd ${WRKDIR}/hdf5-${HDF5_VERSION}; \
+	make ${BUILD_MAKE_FLAGS}
+
+hdf5_install:
+	cd ${WRKDIR}/hdf5-${HDF5_VERSION}; \
+	make install
+

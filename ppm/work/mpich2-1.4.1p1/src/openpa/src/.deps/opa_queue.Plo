@@ -1,0 +1,75 @@
+opa_queue.lo: opa_queue.c opa_queue.h opa_primitives.h opa_config.h opa_util.h \
+ primitives/opa_gcc_intel_32_64.h ./primitives/opa_gcc_intel_32_64_ops.h \
+ ./primitives/opa_gcc_intel_32_64_barrier.h primitives/opa_emulated.h \
+ /usr/include/pthread.h /usr/include/features.h /usr/include/sys/cdefs.h \
+ /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
+ /usr/include/bits/wordsize.h /usr/include/gnu/stubs-64.h /usr/include/endian.h \
+ /usr/include/bits/endian.h /usr/include/bits/byteswap.h \
+ /usr/include/bits/wordsize.h /usr/include/sched.h /usr/include/bits/types.h \
+ /usr/include/bits/wordsize.h /usr/include/bits/typesizes.h \
+ /global/intel/composer_xe_2013.3.163/compiler/include/stddef.h \
+ /usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h /usr/include/time.h \
+ /usr/include/bits/sched.h /usr/include/time.h \
+ /global/intel/composer_xe_2013.3.163/compiler/include/stddef.h \
+ /usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h /usr/include/bits/time.h \
+ /usr/include/xlocale.h /usr/include/bits/pthreadtypes.h \
+ /usr/include/bits/wordsize.h /usr/include/bits/setjmp.h \
+ /usr/include/bits/wordsize.h /usr/include/bits/wordsize.h \
+ /global/intel/composer_xe_2013.3.163/compiler/include/stddef.h \
+ /usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h
+
+opa_queue.h:
+
+opa_primitives.h:
+
+opa_config.h:
+
+opa_util.h:
+
+primitives/opa_gcc_intel_32_64.h:
+
+./primitives/opa_gcc_intel_32_64_ops.h:
+
+./primitives/opa_gcc_intel_32_64_barrier.h:
+
+primitives/opa_emulated.h:
+
+/usr/include/pthread.h:
+
+/usr/include/features.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/bits/wordsize.h:
+
+/usr/include/gnu/stubs.h:
+
+/usr/include/gnu/stubs-64.h:
+
+/usr/include/endian.h:
+
+/usr/include/bits/endian.h:
+
+/usr/include/bits/byteswap.h:
+
+/usr/include/sched.h:
+
+/usr/include/bits/types.h:
+
+/usr/include/bits/typesizes.h:
+
+/global/intel/composer_xe_2013.3.163/compiler/include/stddef.h:
+
+/usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h:
+
+/usr/include/time.h:
+
+/usr/include/bits/sched.h:
+
+/usr/include/bits/time.h:
+
+/usr/include/xlocale.h:
+
+/usr/include/bits/pthreadtypes.h:
+
+/usr/include/bits/setjmp.h:

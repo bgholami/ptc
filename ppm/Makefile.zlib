@@ -1,0 +1,25 @@
+zlib_extract:
+	${EXTRACT_COMAND} -d ${WRKDIR} ${DISTDIR}/zlib-${ZLIB_VERSION}.tar.gz
+
+zlib_configure:
+	mkdir ${PREFIX};\
+	cd ${WRKDIR}/zlib-${ZLIB_VERSION}; \
+	CC="${CC}" CFLAGS="${CFLAGS} -fPIC" \
+	./configure --prefix=${PREFIX}/zlib/${ZLIB_VERSION} 
+
+zlib_build:
+	cd ${WRKDIR}/zlib-${ZLIB_VERSION}; \
+	make ${BUILD_MAKE_FLAGS}
+
+zlib_install:
+	cd ${WRKDIR}/zlib-${ZLIB_VERSION}; \
+	mkdir ${PREFIX}/zlib ;\
+	mkdir ${PREFIX}/zlib/${ZLIB_VERSION} ;\
+	mkdir ${PREFIX}/zlib/${ZLIB_VERSION}/include ;\
+	mkdir ${PREFIX}/zlib/${ZLIB_VERSION}/lib ;\
+	cp zlib.h ${PREFIX}/zlib/${ZLIB_VERSION}/include ;\
+	cp zconf.h ${PREFIX}/zlib/${ZLIB_VERSION}/include ;\
+	cp libz.a ${PREFIX}/zlib/${ZLIB_VERSION}/lib
+
+#	make install
+

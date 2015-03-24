@@ -1,0 +1,17 @@
+FOBJ=obj/main.o obj/mod_comp.o obj/mod_data_ctrl.o obj/mod_data_global.o obj/mod_data_physics.o obj/mod_data_prtl.o obj/mod_data_sph.o obj/mod_init.o obj/mod_io.o obj/mod_mapping.o obj/mod_run.o obj/mod_util.o 
+
+ppmsph_2: $(FOBJ)
+	$(FC) -o $@ $(FFLAGS) $(LDFLAGS) $(FOBJ) $(LIBS)
+
+obj/main.o : src/main.f90 obj/mod_run.o obj/mod_io.o obj/mod_mapping.o obj/mod_init.o obj/mod_util.o obj/mod_data_ctrl.o obj/mod_data_prtl.o obj/mod_data_physics.o obj/mod_data_sph.o obj/mod_data_global.o 
+obj/mod_comp.o : src/mod_comp.f90 src/comp/inc_kernelfunction.inc src/comp/comp_constants.inc src/comp/comp_boundarycondition.inc src/comp/comp_phasevlist.inc src/comp/comp_init_state.inc src/comp/comp_particleloop_1.inc src/comp/comp_pp_interactions.inc src/comp/comp_forces.inc src/comp/press_EOS.inc obj/mod_util.o obj/mod_mapping.o obj/mod_io.o obj/mod_data_ctrl.o obj/mod_data_sph.o obj/mod_data_prtl.o obj/mod_data_physics.o obj/mod_data_global.o 
+obj/mod_data_ctrl.o : src/mod_data_ctrl.f90 obj/mod_data_global.o 
+obj/mod_data_global.o : src/mod_data_global.f90 
+obj/mod_data_physics.o : src/mod_data_physics.f90 obj/mod_data_global.o 
+obj/mod_data_prtl.o : src/mod_data_prtl.f90 obj/mod_data_global.o 
+obj/mod_data_sph.o : src/mod_data_sph.f90 obj/mod_data_global.o 
+obj/mod_init.o : src/mod_init.f90 src/init/define_inputvariables.inc src/init/check_ctrlfile.inc src/init/dump_setup.inc src/init/init_defaults.inc src/init/init_velocity.inc src/init/init_state.inc src/init/initialize.inc src/init/place_particle.inc src/init/create_particles.inc obj/mod_mapping.o obj/mod_comp.o obj/mod_util.o obj/mod_io.o obj/mod_data_prtl.o obj/mod_data_physics.o obj/mod_data_ctrl.o obj/mod_data_sph.o obj/mod_data_global.o 
+obj/mod_io.o : src/mod_io.f90 src/io/write_vlistresult.inc src/io/show_timings.inc src/io/write_logoutput.inc src/io/debugmessage_2char.inc src/io/abortmessage_2char.inc src/io/logmessage_2char.inc src/io/write_ppmdbg.inc src/io/write_output_ascii.inc src/io/write_output.inc obj/mod_util.o obj/mod_data_physics.o obj/mod_data_prtl.o obj/mod_data_sph.o obj/mod_data_ctrl.o obj/mod_data_global.o 
+obj/mod_mapping.o : src/mod_mapping.f90 src/mapping/mapping.inc src/mapping/getmaparray_general.inc src/mapping/makemaparray_general.inc src/mapping/check_newvlist.inc src/mapping/map_ghost_put.inc obj/mod_util.o obj/mod_io.o obj/mod_data_physics.o obj/mod_data_sph.o obj/mod_data_prtl.o obj/mod_data_ctrl.o obj/mod_data_global.o 
+obj/mod_run.o : src/mod_run.f90 src/run/shift_density.inc src/run/shift_velocity.inc src/run/shift_position.inc src/run/run_kickdriftkick.inc src/run/run_steps.inc obj/mod_comp.o obj/mod_data_physics.o obj/mod_mapping.o obj/mod_util.o obj/mod_io.o obj/mod_data_prtl.o obj/mod_data_sph.o obj/mod_data_ctrl.o obj/mod_data_global.o 
+obj/mod_util.o : src/mod_util.f90 src/util/minmaxmeanvar_r8.inc src/util/reshapearrays.inc src/util/resetarrays.inc src/util/get_arguments.inc src/util/finalize.inc src/util/check_abortfile.inc src/util/remove_abortfile.inc src/util/util_uppercase.inc src/util/check_char_length.inc obj/mod_data_sph.o obj/mod_data_prtl.o obj/mod_data_physics.o obj/mod_data_ctrl.o obj/mod_data_global.o 

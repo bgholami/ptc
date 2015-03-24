@@ -1,0 +1,27 @@
+h5part_extractserial: 
+	${EXTRACT_COMAND} -d ${WRKDIR}-serial ${DISTDIR}/H5Part-${H5PART_VERSION}.tar.gz
+	cd ${WRKDIR}-serial/H5Part-${H5PART_VERSION}; \
+	patch -p0 -i ../../patches/H5Part-${H5PART_VERSION}.tools.patch
+
+#	patch -p0 -i ../../patches/H5Part-${H5PART_VERSION}.tools.patch2	
+
+h5part_configureserial:
+	cd ${WRKDIR}-serial/H5Part-${H5PART_VERSION}; \
+	./configure  --prefix=${PREFIX}/h5partserial/${H5PART_VERSION} \
+	CXX=${CXX} CXXFLAGS="${CXXFLAGS}" \
+	FC=${FC} FCLAGS="${FCFLAGS}" \
+	FFLAGS="-fPIC ${FCFLAGS} ${FFLAGS}" \
+	CC=${CC} CFLAGS="${CFLAGS}" \
+	LDFLAGS="-L${ZLIBPATH}/lib ${LDFLAGS}" \
+	--enable-fortran --disable-dependency-tracking \
+	--with-hdf5="${HDF5_BASE}/../../hdf5serial/${HDF5_VERSION}" \
+	--disable-parallel --disable-test
+
+h5part_buildserial: 
+	cd ${WRKDIR}-serial/H5Part-${H5PART_VERSION}; \
+	make ${BUILD_MAKE_FLAGS}
+
+h5part_installserial: 
+	cd ${WRKDIR}-serial/H5Part-${H5PART_VERSION}; \
+	make install
+

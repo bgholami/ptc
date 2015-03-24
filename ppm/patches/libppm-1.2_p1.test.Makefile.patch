@@ -1,0 +1,35 @@
+*** src/interpolate/test/Makefile	2010-11-12 17:25:10.000000000 +0100
+--- src/interpolate/test/Makefile.new	2011-07-13 22:32:01.269448694 +0200
+***************
+*** 1,9 ****
+  
+- TESTINC=-I../../../include -L../../../lib -lppm
+  sources=$(wildcard *.f)
+  targets=$(patsubst %.f,%,$(sources))
+  
+  all : $(targets)
+  
+  $(targets) : $(sources)
+! 	$(FC) $(OPTS) $(TESTINC) $(LDFLAGS) $(LIBS) -o $@ $< 
+--- 1,21 ----
++ #FC=/home/adami/prefix-intel/mpich2/1.4/bin/mpif90
++ FC=gfortran
++ 
++ #OPTS=-free -g -O0 -check all
++ OPTS=-O0 -g -ffree-form -ffast-math
++ 
++ TESTINC=-I/home/adami/prefix-gfortran-serial/ppm/1.2_p1/include
++ #LIBS=-lmpichf90 -lppm -lmetis
++ LIBS=-lppm -lmetis
++ LDFLAGS=-L/home/adami/prefix-gfortran-serial/metis/4.0/lib -L/home/adami/prefix-gfortran-serial/ppm/1.2_p1/lib
+  
+  sources=$(wildcard *.f)
+  targets=$(patsubst %.f,%,$(sources))
+  
+  all : $(targets)
+  
+  $(targets) : $(sources)
+! 	$(FC) $(OPTS) $(TESTINC) $(LDFLAGS) -o $@ $< ${LIBS} 
+! 
+! clean :
+! 	rm ${targets}

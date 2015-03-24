@@ -1,0 +1,26 @@
+h5part_extract: 
+	${EXTRACT_COMAND} -d ${WRKDIR} ${DISTDIR}/H5Part-${H5PART_VERSION}.tar.gz
+	cd ${WRKDIR}/H5Part-${H5PART_VERSION};\
+	patch -p0 -i ../../patches/H5Part-${H5PART_VERSION}.tools.patch; \
+	patch -p0 -i ../../patches/H5Part-${H5PART_VERSION}.configure.patch
+
+#	patch -p0 -i ../../patches/H5Part-${H5PART_VERSION}.tools.patch2	
+
+h5part_configure:
+	cd ${WRKDIR}/H5Part-${H5PART_VERSION}; \
+	FC=${MPIFC} \
+	CC=${MPICC} \
+	CXX=${MPICXX} \
+	./configure  --prefix=${H5PART_BASE} \
+	--enable-parallel --enable-fortran \
+	--disable-shared --enable-static --enable-tools \
+	--with-hdf5=${HDF5_BASE}
+
+h5part_build: 
+	cd ${WRKDIR}/H5Part-${H5PART_VERSION}; \
+	make ${BUILD_MAKE_FLAGS}
+
+h5part_install: 
+	cd ${WRKDIR}/H5Part-${H5PART_VERSION}; \
+	make install
+

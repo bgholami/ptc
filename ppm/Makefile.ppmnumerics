@@ -1,0 +1,18 @@
+ppmnumerics_extract:
+	${EXTRACT_COMAND} -d ${WRKDIR} ${DISTDIR}/libppmnumerics-${PPMNUMERICS_VERSION}.tar.gz
+
+ppmnumerics_configure:
+	cd ${WRKDIR}/libppmnumerics-${PPMNUMERICS_VERSION} ;\
+	./configure --prefix=${PPMNUMERICSPATH} --enable-mpi=mpich2 \
+	--enable-linux LDFLAGS="-L${METISPATH}/lib ${LDFLAGS}" \
+	--with-ppm=${PPMPATH}
+#	--with-ppm=${WRKDIR}/libppm-${PPM_VERSION}
+
+ppmnumerics_build:
+	cd ${WRKDIR}/libppmnumerics-${PPMNUMERICS_VERSION} ;\
+	make ${BUILD_MAKE_FLAGS}
+
+ppmnumerics_install:
+	mkdir ${PREFIX}/ppmnumerics; mkdir ${PREFIX}/ppmnumerics/${PPMNUMERICS_VERSION};\
+	cp -r ${WRKDIR}/libppmnumerics-${PPMNUMERICS_VERSION}/lib ${PPMNUMERICSPATH} ;\
+	cp -r ${WRKDIR}/libppmnumerics-${PPMNUMERICS_VERSION}/include ${PPMNUMERICSPATH}

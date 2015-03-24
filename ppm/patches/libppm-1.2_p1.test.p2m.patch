@@ -1,0 +1,21 @@
+*** src/interpolate/test/ppm_test_interp_p2m.f	2010-11-12 17:25:10.000000000 +0100
+--- src/interpolate/test/ppm_test_interp_p2m.f.new	2011-07-13 22:32:12.573448428 +0200
+***************
+*** 36,44 ****
+      use ppm_module_init
+      use ppm_module_finalize
+      use ppm_module_map_part_global
+!     use ppm_module_map_part_push
+!     use ppm_module_map_part_pop
+!     use ppm_module_map_part_send
+  
+      implicit none
+  
+--- 36,42 ----
+      use ppm_module_init
+      use ppm_module_finalize
+      use ppm_module_map_part_global
+!     use ppm_module_map_part
+  
+      implicit none
+  

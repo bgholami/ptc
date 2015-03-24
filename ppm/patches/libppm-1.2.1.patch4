@@ -1,0 +1,26 @@
+diff --git a/src/interpolate/ppm_interp_m2p.f b/src/interpolate/ppm_interp_m2p.f
+index c432d74..9ae037a 100644
+--- a/src/interpolate/ppm_interp_m2p.f
++++ b/src/interpolate/ppm_interp_m2p.f
+@@ -473,7 +473,7 @@
+      &                       xp(2,ipart).GE.min_sub(2,idoml) .AND. &
+      &                       xp(1,ipart).LE.max_sub(1,idoml) .AND. &
+      &                       xp(2,ipart).LE.max_sub(2,idoml) ) ) THEN
+-                     IF(   (xp(1,ipart).LT.max_sub(1,idom) .OR.  &
++                     IF(   (xp(1,ipart).LT.max_sub(1,idoml) .OR.  &
+      &                           (topo%subs_bc(2,idoml).EQ.1   .AND.    &
+      &                           bcdef(2).NE. ppm_param_bcdef_periodic)).AND.&
+      &                          (xp(2,ipart).LT.max_sub(2,idoml) .OR.  &
+diff --git a/src/interpolate/ppm_interp_p2m.f b/src/interpolate/ppm_interp_p2m.f
+index 9aafbb1..20c18f5 100644
+--- a/src/interpolate/ppm_interp_p2m.f
++++ b/src/interpolate/ppm_interp_p2m.f
+@@ -494,7 +494,7 @@
+      &                   xp(1,ipart).LE.max_sub(1,idoml) .AND. &
+      &                   xp(2,ipart).LE.max_sub(2,idoml) ) ) THEN
+ 
+-                 IF(   (xp(1,ipart).LT.max_sub(1,idom) .OR.  &
++                 IF(   (xp(1,ipart).LT.max_sub(1,idoml) .OR.  &
+      &                       (topo%subs_bc(2,idoml).EQ.1   .AND.    &
+      &                       bcdef(2).NE. ppm_param_bcdef_periodic)).AND.&
+      &                      (xp(2,ipart).LT.max_sub(2,idoml) .OR.  &

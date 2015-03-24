@@ -1,0 +1,17 @@
+*** Makefile.in	1998-10-02 23:28:35.000000000 +0200
+--- Makefile.in.new	2011-07-12 10:35:29.204911295 +0200
+***************
+*** 1,6 ****
+  
+  # Which compiler to use
+! CC = cc
+  
+  # What optimization level to use
+  OPTFLAGS = -O2 
+--- 1,6 ----
+  
+  # Which compiler to use
+! CC = icc
+  
+  # What optimization level to use
+  OPTFLAGS = -O2 

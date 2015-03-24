@@ -1,0 +1,42 @@
+Common subdirectories: tools/.deps and tools-updated/.deps
+Common subdirectories: tools/.libs and tools-updated/.libs
+diff -c tools/h5pAttrib.cc tools-updated/h5pAttrib.cc
+*** tools/h5pAttrib.cc	Mon Jul 25 19:15:57 2011
+--- tools-updated/h5pAttrib.cc	Wed Jan 25 14:39:28 2012
+***************
+*** 160,166 ****
+      }
+      else
+      {
+!         register char *cp;    /* pointer into current token */
+  
+          /* short command line option */
+          opt_opt = argv[opt_ind][sp];
+--- 160,166 ----
+      }
+      else
+      {
+!         register const char *cp;    /* pointer into current token */
+  
+          /* short command line option */
+          opt_opt = argv[opt_ind][sp];
+diff -c tools/h5pToGNUplot.cc tools-updated/h5pToGNUplot.cc
+*** tools/h5pToGNUplot.cc	Mon Jul 25 19:15:57 2011
+--- tools-updated/h5pToGNUplot.cc	Wed Jan 25 14:39:28 2012
+***************
+*** 155,161 ****
+      }
+      else
+      {
+!         register char *cp;    /* pointer into current token */
+  
+          /* short command line option */
+          opt_opt = argv[opt_ind][sp];
+--- 155,161 ----
+      }
+      else
+      {
+!         register const char *cp;    /* pointer into current token */
+  
+          /* short command line option */
+          opt_opt = argv[opt_ind][sp];

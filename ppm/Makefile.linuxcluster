@@ -1,0 +1,16 @@
+PREFIX          =       /home/cluster/t7841/lu96mah4/prefix-mpt
+#MPIPATH         =       $(PREFIX)/mpich2/$(MPICH2_VERSION)
+#MPIPATH         =       /lrz/sys/parallel/mpich2/1.4/intel11
+MPIPATH         =       /lrz/sys/parallel/mpt
+ZLIBPATH        =       $(PREFIX)/zlib/$(ZLIB_VERSION)
+#HDF5PATH        =       ${PREFIX}/hdf5/${HDF5_VERSION}
+HDF5PATH        =       /lrz/sys/libraries/hdf5/1.8.7_mpt
+METISPATH       =       ${PREFIX}/metis/${METIS_VERSION}
+PPMPATH         =       ${PREFIX}/ppm/${PPM_VERSION}
+#PPMNUMERICSPATH        =       ${PREFIX}/ppmnumerics/${PPMNUMERICS_VERSION}
+
+#Linux cluster
+MPIFC  = ${MPIPATH}/bin/mpif90
+MPICC  = ${MPIPATH}/bin/mpicc
+MPICXX = ${MPIPATH}/bin/mpiCC
+

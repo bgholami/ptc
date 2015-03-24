@@ -1,0 +1,15 @@
+makedepf90_extract:
+	${EXTRACT_COMAND} -d ${WRKDIR} ${DISTDIR}/makedepf90-${MAKEDEPF90_VERSION}.tar.gz
+
+makedepf90_configure:
+	cd ${WRKDIR}/makedepf90-${MAKEDEPF90_VERSION};\
+	CC=$(CC) CFLAGS="$(CFLAGS)" ./configure --disable-shared --prefix=${PREFIX}/makedepf90/$(MAKEDEPF90_VERSION)
+
+makedepf90_build:
+	cd ${WRKDIR}/makedepf90-${MAKEDEPF90_VERSION};\
+	make ${BUILD_MAKE_FLAGS}
+
+makedepf90_install:
+	cd ${WRKDIR}/makedepf90-${MAKEDEPF90_VERSION};\
+	make install
+

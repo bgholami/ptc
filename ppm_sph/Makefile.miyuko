@@ -1,0 +1,32 @@
+#---------------------------------------------------------------------
+# CHOICES AT COMPILE-TIME
+#--------------------------------------------------------------------
+# Dimensions of problem (2D or 3D)
+DIM     ?= 2
+
+#Kernel 
+# 1 = Quintic spline,  2 = B-Spline, 3 = Cubic-Spline 4=Wendland kernel
+KERNEL  ?= 1
+
+MPICH2_VERSION          = 1.4.1p1
+MAKEDEPF90_VERSION      = 2.8.8
+METIS_VERSION           = 4.0
+PPM_VERSION             = 1.2.2
+
+
+PREFIX          = /home/adami/prefix-O3
+
+PPM_BASE        = ${PREFIX}/ppm/$(PPM_VERSION)
+MAKEDEPF90_BASE = ${PREFIX}/makedepf90/$(MAKEDEPF90_VERSION)
+METIS_BASE      = ${PREFIX}/metis/${METIS_VERSION}
+
+MPI_BASE        = ${PREFIX}/mpich2/${MPICH2_VERSION}
+
+FC              = mpif90
+
+#COMPILEROPTION          = -O0 -fpp -g -traceback -check all -warn all
+#COMPILEROPTION          = -O1 -fpp -g -traceback -check all
+COMPILEROPTION          = -O2 -fpp -ftz
+#COMPILEROPTION          = -O3 -fpp -ftz -ipo -fast -parallel  
+
+ 

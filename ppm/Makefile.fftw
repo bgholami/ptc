@@ -1,0 +1,28 @@
+fftw_extract: $(DISTDIR)/fftw-$(FFTW_VERSION).tar.gz
+	${EXTRACT_COMAND} -d ${WRKDIR} $< 
+
+fftw_configure:
+	cd ${WRKDIR}/fftw-${FFTW_VERSION};\
+	FC=${FC} F77=${FC} CC=${CC} \
+	./configure --prefix=${FFTW_BASE} --enable-fortran \
+	--disable-mpi
+	
+fftw_configure2:
+	cd ${WRKDIR}/fftw-${FFTW_VERSION};\
+        FC=${FC} F77=${FC} CC=${CC} \
+        ./configure --prefix=${FFTW_BASE} --enable-fortran \
+        --enable-long-double --disable-mpi
+
+fftw_build:
+	cd ${WRKDIR}/fftw-${FFTW_VERSION};\
+	make 
+
+fftw_clean:
+	cd ${WRKDIR}/fftw-${FFTW_VERSION};\
+	make clean
+
+fftw_install:
+	cd ${WRKDIR}/fftw-${FFTW_VERSION};\
+	mkdir ${PREFIX}/fftw ; mkdir ${FFTW_BASE};\
+	make install
+

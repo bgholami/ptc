@@ -1,0 +1,26 @@
+ZLIB_VERSION       = 1.2.5
+HDF5_VERSION       = 1.8.10-snap0
+H5PART_VERSION     = 1.6.6
+METIS_VERSION      = 4.0
+MAKEDEPF90_VERSION = 2.8.8
+PPM_VERSION        = 1.2.2
+FFTW_VERSION       = 3.3.2
+
+PREFIX          =  /home/adami/prefix-O2
+
+METIS_BASE      = ${PREFIX}/metis/${METIS_VERSION}
+PPM_BASE        = ${PREFIX}/ppm/${PPM_VERSION}
+HDF5_BASE       = ${PREFIX}/hdf5/${HDF5_VERSION}
+H5PART_BASE     = ${PREFIX}/h5part/${H5PART_VERSION}
+ZLIB_BASE       = ${PREFIX}/zlib/${ZLIB_VERSION}
+FFTW_BASE       = ${PREFIX}/fftw/${FFTW_VERSION}
+
+MPI_BASE        = /usr
+#${PREFIX}/mpich2/${MPICH2_VERSION}
+MPI_LIB         = "-L${MPI_BASE}/lib"
+ZLIB_LIB        = "-L${ZLIB_BASE}/lib"
+MPI_INC         = "-I${MPI_BASE}/include"
+
+MPIFC           = "$(MPI_BASE)/bin/mpif90 -f90=ifort"
+MPICC           = "$(MPI_BASE)/bin/mpicc  -cc=icc"
+MPICXX          = "$(MPI_BASE)/bin/mpicxx  -cxx=icpc"

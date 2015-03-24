@@ -1,0 +1,4 @@
+[0] (initialize) : PROGRAM STARTED ON: mitsuko
+[0] (initialize) : using the command: ./ppmsph_2 res3.txt
+[0] (initialize) : RUNNING WITH     1 Processors
+[0] (check_ctrlfile) : Cutoff too large for that number of procs

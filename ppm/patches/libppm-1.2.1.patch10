@@ -1,0 +1,13 @@
+diff --git a/src/neighlist/ppm_neighlist_clist.f b/src/neighlist/ppm_neighlist_clist.f
+index 365a0ac..b18942b 100644
+--- a/src/neighlist/ppm_neighlist_clist.f
++++ b/src/neighlist/ppm_neighlist_clist.f
+@@ -371,6 +371,8 @@
+  &                   'work xp array wxp',__LINE__,info)
+               GOTO 9999
+           ENDIF
++      ELSE
++          NULLIFY(wxp)
+       ENDIF
+ 
+       !-------------------------------------------------------------------------

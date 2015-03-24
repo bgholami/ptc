@@ -1,0 +1,7 @@
+ src/mpid/ch3  src/mpi/romio src/pmi/simple src/pm/hydra src/mpe2  src/binding/f90
+icc -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -O2   -O2
+icpc -O2  -O2
+ifort   -O2
+ifort -O2    -O2
+ '--prefix=/scratch/ptc/prefix-O2/mpich2/1.4.1p1' 'FC=ifort' 'FCFLAGS=-O2  ' 'CC=icc' 'CFLAGS=-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -O2' 'CXX=icpc' 'CXXFLAGS=-O2' '--enable-fc' '--enable-fast=defopt' '--enable-timer-type=gettimeofday' '--with-mpe' 'RSHCOMMAND=/usr/bin/ssh' '--disable-dependencies'
+ 

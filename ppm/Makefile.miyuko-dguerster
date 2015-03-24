@@ -1,0 +1,32 @@
+ZLIB_VERSION       = 1.2.5
+HDF5_VERSION       = 1.8.7
+H5PART_VERSION     = 1.6.2
+METIS_VERSION      = 4.0
+MAKEDEPF90_VERSION = 2.8.8
+PPM_VERSION        = 1.2.1
+MPICH2_VERSION     = 1.4
+
+PREFIX          =  /home/dguerster/prefix-O3
+
+ZLIB_BASE       = ${PREFIX}/zlib/${ZLIB_VERSION}
+HDF5_BASE       = ${PREFIX}/hdf5/${HDF5_VERSION}
+H5PART_BASE     = ${PREFIX}/h5part/${H5PART_VERSION}
+METIS_BASE      = ${PREFIX}/metis/${METIS_VERSION}
+PPM_BASE        = ${PREFIX}/ppm/${PPM_VERSION}
+
+MPI_BASE        = ${PREFIX}/mpich2/${MPICH2_VERSION}
+MPI_LIB         = "-L${MPI_BASE}/lib"
+MPI_INC         = "-I${MPI_BASE}/include"
+#MPI_BASE = system one used here
+#MPI_LIB = system one "-L${MPI_BASE}/lib"
+#MPI_INC = system one
+
+MPIFC           = ${MPI_BASE}/bin/mpif90
+MPICC           = ${MPI_BASE}/bin/mpicc
+MPICXX          = ${MPI_BASE}/bin/mpicxx
+
+#MPIFC  = /lrz/sys/parallel/mpt/bin/mpif90
+#MPICC  = /lrz/sys/parallel/mpt/bin/mpicc
+#MPICXX = /lrz/sys/parallel/mpt/bin/mpiCC
+
+BUILD_MAKE_FLAGS     =    -j8

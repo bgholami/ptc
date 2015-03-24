@@ -1,0 +1,322 @@
+---
+ src/neighlist/ppm_neighlist_clist.f         |   68 +++++++++++++++++----------
+ src/neighlist/ppm_neighlist_vlist.f         |   24 +++++----
+ src/neighlist/test/ppm_module_neighlist.fun |   69 +++++++++++++++++++++++++++
+ 3 files changed, 125 insertions(+), 36 deletions(-)
+
+diff --git a/src/neighlist/ppm_neighlist_clist.f b/src/neighlist/ppm_neighlist_clist.f
+index 57da2a2..2977c0c 100644
+--- a/src/neighlist/ppm_neighlist_clist.f
++++ b/src/neighlist/ppm_neighlist_clist.f
+@@ -88,7 +88,7 @@
+       !-------------------------------------------------------------------------
+       !  Arguments     
+       !-------------------------------------------------------------------------
+-      REAL(MK), DIMENSION(:,:), INTENT(IN   )    :: xp
++      REAL(MK), DIMENSION(:,:), INTENT(IN   ),POINTER :: xp
+       !!! Particle co-ordinates
+       INTEGER                 , INTENT(IN   )    :: np
+       !!! Number of particles
+@@ -114,7 +114,9 @@
+       ! timer
+       REAL(MK)                                :: t0
+       ! counters
+-      INTEGER                                 :: idom,jdom,i,npdx
++      REAL(MK), DIMENSION(:,:), POINTER       :: wxp => NULL()
++      ! work array, must be allocated of pidx is passed
++      INTEGER                                 :: idom,jdom,i,npidx,wnp
+       ! extent of cell mesh
+       REAL(MK), DIMENSION(ppm_dim)            :: xmin,xmax
+       ! actual cell size
+@@ -127,10 +129,11 @@
+       INTEGER                                 :: nsbc
+       LOGICAL, DIMENSION(2*ppm_dim)           :: isbc
+       INTEGER                                 :: iopt
+-      INTEGER, DIMENSION(1)                   :: ldc
++      INTEGER, DIMENSION(2)                   :: ldc
+       LOGICAL                                 :: valid
+       TYPE(ppm_t_topo)          , POINTER     :: topo => NULL()
+       REAL(MK)                                :: eps
++      LOGICAL                                 :: lpidx
+       !-------------------------------------------------------------------------
+       !  Externals 
+       !-------------------------------------------------------------------------
+@@ -156,9 +159,28 @@
+       topo => ppm_topo(topoid)%t
+ 
+       !-------------------------------------------------------------------------
+-      !  Allocate nm
++      !  Allocate or set wxp
+       !-------------------------------------------------------------------------
+-
++      IF (PRESENT(pidx)) THEN
++          lpidx = .TRUE.
++          npidx = SIZE(pidx,1)
++          iopt = ppm_param_alloc_fit
++          ldc(1) = ppm_dim
++          ldc(2) = npidx
++          CALL ppm_alloc(wxp,ldc,iopt,info)
++          IF (info .NE. 0) THEN
++              info = ppm_error_fatal
++              CALL ppm_error(ppm_err_alloc,'ppm_neighlist_clist',  &
++ &                   'work xp array wxp',__LINE__,info)
++              GOTO 9999
++          ENDIF
++          FORALL(i=1:npidx) wxp(:,i) = xp(:,pidx(i))
++          wnp = npidx
++      ELSE
++          lpidx = .FALSE.
++          wxp => xp
++          wnp = np
++      ENDIF
+       !-------------------------------------------------------------------------
+       !  Allocate clist to the number of subs this processor has
+       !-------------------------------------------------------------------------
+@@ -312,16 +334,9 @@
+           !  Rank the particles in this extended sub
+           !---------------------------------------------------------------------
+           IF (ppm_dim .EQ. 2) THEN
+-              IF (PRESENT(pidx)) THEN
+-                  npdx = SIZE(pidx,1)
+-                  CALL ppm_util_rank2d(xp(1:2,pidx),npdx,xmin(1:2),xmax(1:2),&
+-     &                    clist(idom)%nm(1:2),ngl(1:4),clist(idom)%lpdx,&
+-     &                    clist(idom)%lhbx,info)
+-              ELSE
+-                  CALL ppm_util_rank2d(xp,np,xmin(1:2),xmax(1:2),&
+-     &                    clist(idom)%nm(1:2),ngl(1:4),clist(idom)%lpdx,&
+-     &                    clist(idom)%lhbx,info)
+-              ENDIF
++              CALL ppm_util_rank2d(wxp,wnp,xmin(1:2),xmax(1:2),&
++     &                 clist(idom)%nm(1:2),ngl(1:4),clist(idom)%lpdx,&
++     &                 clist(idom)%lhbx,info)
+               !-----------------------------------------------------------------
+               !  We have to increase nm by the ghost layers to provide the same
+               !  behaviour as before the change of interface of ppm_util_rank
+@@ -329,16 +344,9 @@
+               clist(idom)%nm(1) = clist(idom)%nm(1) + ngl(1) + ngl(3)
+               clist(idom)%nm(2) = clist(idom)%nm(2) + ngl(2) + ngl(4)
+           ELSEIF (ppm_dim .EQ. 3) THEN
+-              IF (PRESENT(pidx)) THEN
+-                  npdx = SIZE(pidx,1)
+-                  CALL ppm_util_rank3d(xp(1:3,pidx),npdx,xmin(1:3),xmax(1:3),&
+-     &                    clist(idom)%nm(1:3),ngl(1:6),clist(idom)%lpdx,&
+-     &                    clist(idom)%lhbx,info)
+-              ELSE
+-                  CALL ppm_util_rank3d(xp,np,xmin(1:3),xmax(1:3),&
+-     &                    clist(idom)%nm(1:3),ngl(1:6),clist(idom)%lpdx,&
+-     &                    clist(idom)%lhbx,info)
+-              ENDIF
++              CALL ppm_util_rank3d(wxp,wnp,xmin(1:3),xmax(1:3),&
++     &                 clist(idom)%nm(1:3),ngl(1:6),clist(idom)%lpdx,&
++     &                 clist(idom)%lhbx,info)
+               !-----------------------------------------------------------------
+               !  We have to increase nm by the ghost layers to provide the same
+               !  behaviour as before the change of interface of ppm_util_rank
+@@ -354,6 +362,16 @@
+               GOTO 9999
+           ENDIF
+       ENDDO
++      IF (lpidx) THEN
++          iopt = ppm_param_dealloc
++          CALL ppm_alloc(wxp,ldc,iopt,info)
++          IF (info .NE. 0) THEN
++              info = ppm_error_error
++              CALL ppm_error(ppm_err_dealloc,'ppm_neighlist_clist',  &
++ &                   'work xp array wxp',__LINE__,info)
++              GOTO 9999
++          ENDIF
++      ENDIF
+ 
+       !-------------------------------------------------------------------------
+       !  Return
+diff --git a/src/neighlist/ppm_neighlist_vlist.f b/src/neighlist/ppm_neighlist_vlist.f
+index f6b2446..42fa42d 100644
+--- a/src/neighlist/ppm_neighlist_vlist.f
++++ b/src/neighlist/ppm_neighlist_vlist.f
+@@ -81,7 +81,7 @@
+       !-------------------------------------------------------------------------
+       !  Arguments     
+       !-------------------------------------------------------------------------
+-      REAL(MK), DIMENSION(:,:), INTENT(IN   ) :: xp
++      REAL(MK), DIMENSION(:,:), INTENT(IN   ), POINTER :: xp
+       !!! particle co-ordinates
+       INTEGER                 , INTENT(IN   ) :: np
+       !!! number of particles.
+@@ -168,6 +168,7 @@
+       LOGICAL                                    :: valid
+       TYPE(ppm_t_topo)       , POINTER           :: topo => NULL()
+       REAL(MK)                                   :: eps
++      LOGICAL                                    :: lpidx
+       !-------------------------------------------------------------------------
+       !  Externals 
+       !-------------------------------------------------------------------------
+@@ -182,10 +183,12 @@
+       !  the size of this list as the effective number of particles. Use
+       !  np otherwise.
+       !-------------------------------------------------------------------------
++      npdx = np
+       IF (PRESENT(pidx)) THEN
++          lpidx = .TRUE.
+           IF (np .GT. SIZE(pidx,1)) npdx = SIZE(pidx,1)
+       ELSE
+-          npdx = np
++          lpidx = .FALSE.
+       ENDIF
+       !-------------------------------------------------------------------------
+       !  Do we need to store the Verlet lists or just determine their lengths?
+@@ -261,9 +264,8 @@
+           cl => ppm_clist
+       ENDIF
+       IF (.NOT.(PRESENT(clist).AND.ASSOCIATED(clist))) THEN
+-          IF (PRESENT(pidx)) THEN
+-              CALL ppm_neighlist_clist(topoid,xp(:,pidx),npdx,bsize, &
+-     &                                 lsymm,cl,info)
++          IF (lpidx) THEN
++              CALL ppm_neighlist_clist(topoid,xp,npdx,bsize,lsymm,cl,info,pidx)
+           ELSE
+               CALL ppm_neighlist_clist(topoid,xp,npdx,bsize,lsymm,cl,info)
+           ENDIF
+@@ -378,7 +380,7 @@
+                                           jp = cl(idom)%lpdx(jpart)
+                                           ! translate to real particle
+                                           ! index if needed
+-                                          IF (PRESENT(pidx)) THEN
++                                          IF (lpidx) THEN
+                                               ii = pidx(ip)
+                                               jj = pidx(jp)
+                                           ELSE
+@@ -410,7 +412,7 @@
+ #endif
+                                           ! translate to real particle
+                                           ! index if needed
+-                                          IF (PRESENT(pidx)) THEN
++                                          IF (lpidx) THEN
+                                               ii = pidx(ip)
+                                               jj = pidx(jp)
+                                           ELSE
+@@ -454,7 +456,7 @@
+                                       jp = cl(idom)%lpdx(jpart)
+                                       ! translate to real particle
+                                       ! index if needed
+-                                      IF (PRESENT(pidx)) THEN
++                                      IF (lpidx) THEN
+                                           ii = pidx(ip)
+                                           jj = pidx(jp)
+                                       ELSE
+@@ -565,7 +567,7 @@
+                                               jp = cl(idom)%lpdx(jpart)
+                                               ! translate to real particle
+                                               ! index if needed
+-                                              IF (PRESENT(pidx)) THEN
++                                              IF (lpidx) THEN
+                                                   ii = pidx(ip)
+                                                   jj = pidx(jp)
+                                               ELSE
+@@ -598,7 +600,7 @@
+ #endif
+                                               ! translate to real particle
+                                               ! index if needed
+-                                              IF (PRESENT(pidx)) THEN
++                                              IF (lpidx) THEN
+                                                   ii = pidx(ip)
+                                                   jj = pidx(jp)
+                                               ELSE
+@@ -648,7 +650,7 @@
+                                           jp = cl(idom)%lpdx(jpart)
+                                           ! translate to real particle
+                                           ! index if needed
+-                                          IF (PRESENT(pidx)) THEN
++                                          IF (lpidx) THEN
+                                               ii = pidx(ip)
+                                               jj = pidx(jp)
+                                           ELSE
+diff --git a/src/neighlist/test/ppm_module_neighlist.fun b/src/neighlist/test/ppm_module_neighlist.fun
+index 965c261..72ee87e 100644
+--- a/src/neighlist/test/ppm_module_neighlist.fun
++++ b/src/neighlist/test/ppm_module_neighlist.fun
+@@ -17,6 +17,7 @@ real(mk)                        :: tol,min_rcp,max_rcp
+ integer                         :: info,comm,rank,nproc
+ integer                         :: topoid
+ integer                         :: np = 100000
++integer                         :: npart
+ integer                         :: mp
+ integer                         :: newnp
+ real(mk),dimension(:,:),pointer :: xp => NULL()
+@@ -109,6 +110,74 @@ real(mk)                         :: eps
+ 
+     end teardown
+ 
++    test stack_overflow({npart: [10,1000,10000,100000,1000000,10000000]})
++        use ppm_module_typedef
++        use ppm_module_mktopo
++        use ppm_module_map
++        use ppm_module_topo_check
++        use ppm_module_util_dbg
++
++        integer                         :: mpart
++        integer                         :: newnpart
++        integer                         :: oldip,ip = -1
++        real(mk),dimension(:,:),pointer :: p => NULL()
++        real(mk),dimension(ndim)        :: cp
++        real(mk), parameter             :: gl = 0.001_mk
++        real(mk), parameter             :: skin = 0.0_mk
++        integer, dimension(:),pointer   :: nvlist => NULL()
++        integer, dimension(:,:),pointer :: vlist => NULL()
++        integer                         :: snpart 
++        integer                         :: i,j,k
++        integer, dimension(:),pointer   :: pidx
++
++        allocate(p(ndim,npart))
++        snpart = int(sqrt(real(npart,mk)))
++        k = 0
++        do i=1,snpart
++            do j=1,snpart
++                k = k + 1
++                p(1,k) = (i-1)*(1.0_mk/(snpart+1))
++                p(2,k) = (j-1)*(1.0_mk/(snpart+1))
++            enddo
++        enddo
++        npart = k
++        bcdef(1:6) = ppm_param_bcdef_freespace
++        nullify(nvlist,vlist)
++        allocate(pidx(npart))
++        forall(k=1:npart) pidx(k) = k
++
++        !----------------
++        ! make topology
++        !----------------
++        decomp = ppm_param_decomp_cuboid
++        assig  = ppm_param_assign_internal
++
++        topoid = 0
++
++        call ppm_mktopo(topoid,p,npart,decomp,assig,min_phys,max_phys,bcdef, &
++        &               gl+skin,cost,info)
++
++        call ppm_map_part_global(topoid,p,npart,info)
++        call ppm_map_part_send(npart,newnpart,info)
++        call ppm_map_part_pop(p,ndim,npart,newnpart,info)
++        npart=newnpart
++
++
++        call ppm_map_part_ghost_get(topoid,p,ndim,npart,0,gl+skin,info)
++        call ppm_map_part_send(npart,mpart,info)
++        call ppm_map_part_pop(p,ndim,npart,mpart,info)
++        
++        call ppm_topo_check(topoid,p,npart,ok,info)
++        !call ppm_dbg_print_d(topoid,gl+skin,1,1,info,p,npart,mpart)
++        
++        call ppm_neighlist_vlist(topoid,p,mpart,gl,skin,.TRUE.,&
++        &                        vlist,nvlist,info,pidx)
++        
++        assert_equal(info,0)
++        deallocate(p,vlist,nvlist,pidx)
++    end test
++
++
+     test symBC_neighlist
+         ! tests symmetric boundary conditions and ghost get
+         use ppm_module_typedef
+-- 
+1.7.4.1
+

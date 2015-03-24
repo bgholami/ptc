@@ -1,0 +1,63 @@
+ppm_extract: $(DISTDIR)/libppm-$(PPM_VERSION).tar.gz
+	${EXTRACT_COMAND} -d ${WRKDIR} $< 
+
+#	cd ${WRKDIR}/libppm-${PPM_VERSION} ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch1 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch2 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch3 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch4 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch5 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch6 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch7 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch8 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch9 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch10 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch11 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch12 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch13 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch15 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch16 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch17 ;\
+#	patch -p1 -i ../../patches/libppm-${PPM_VERSION}.patch18 ;\
+#	cd ${WRKDIR}/libppm-${PPM_VERSION}/src/topo ;\
+#	unzip -o ../../../../patches/ppm_patch.zip
+
+#parallel
+ppm_configure:
+	cd ${WRKDIR}/libppm-${PPM_VERSION};\
+	FC=${MPIFC} \
+	./configure --prefix=${PPM_BASE} LDFLAGS="-L${METIS_BASE}/lib" \
+	--enable-mpi --enable-linux 
+
+#serial
+#ppm_configure:
+#	cd ${WRKDIR}/ppmcore_${PPM_VERSION};\
+#	./configure --prefix=${PPMPATH} LDFLAGS="-L${METISPATH}/lib" \
+#	FC=${FC} CC=${CC} CXX=${CXX} \
+#	FCFLAGS="${FCFLAGS}" CFLAGS="${CFLAGS}" CXXFLAGS="${CXXFLAGS}" \
+#	--enable-linux
+
+
+#	./configure --prefix=${PPMPATH} --enable-mpi=mpich2 LDFLAGS="-L${METISPATH}/lib"
+#
+#
+#	FC=${MPIFC} CC=${MPICC} CXX=${MPICXX}  \
+#	./configure --prefix=${PPMPATH} --enable-mpi \
+#	--enable-linux LDFLAGS="-L${METISPATH}/lib ${LDFLAGS}" 
+
+ppm_build:
+	cd ${WRKDIR}/libppm-${PPM_VERSION};\
+	make 
+
+ppm_clean:
+	cd ${WRKDIR}/libppm-${PPM_VERSION};\
+	make clean
+
+ppm_install:
+	cd ${WRKDIR}/libppm-${PPM_VERSION};\
+	mkdir ${PREFIX}/ppm ; mkdir ${PPM_BASE};\
+	make install
+
+#	cp -r ${WRKDIR}/ppmcore_${PPM_VERSION}/lib ${PPMPATH};\
+#	cp -r ${WRKDIR}/ppmcore_${PPM_VERSION}/include ${PPMPATH}
+

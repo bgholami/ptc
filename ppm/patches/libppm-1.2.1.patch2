@@ -1,0 +1,74 @@
+diff --git a/src/topo/ppm_topo_mkfield.f b/src/topo/ppm_topo_mkfield.f
+index fd4aef9..ebb1d35 100644
+--- a/src/topo/ppm_topo_mkfield.f
++++ b/src/topo/ppm_topo_mkfield.f
+@@ -142,7 +142,13 @@
+       INTEGER , DIMENSION(:  ), INTENT(IN   ) :: bcdef
+       !!! Boundary conditions for the topology
+       !!!
+-      !!! First index is 1-6 (each of the faces)
++      !!! NOTE: first index is 1-6 (each of the faces)
++      !!! - west  : 1
++      !!! - east  : 2
++      !!! - south : 3
++      !!! - north : 4
++      !!! - bottom: 5
++      !!! - top   : 6
+       INTEGER,  DIMENSION(:  ), INTENT(IN   ) :: ighostsize
+       !!! Size (width) of the ghost layer.
+       REAL(MK), DIMENSION(:  ), POINTER       :: cost
+diff --git a/src/topo/ppm_topo_mkgeom.f b/src/topo/ppm_topo_mkgeom.f
+index 3a7e13a..6a30b99 100644
+--- a/src/topo/ppm_topo_mkgeom.f
++++ b/src/topo/ppm_topo_mkgeom.f
+@@ -121,7 +121,13 @@
+       INTEGER , DIMENSION(:  ), INTENT(IN   ) :: bcdef
+       !!! Boundary conditions for the topology
+       !!!
+-      !!! first index is 1-6 (each of the faces)
++      !!! NOTE: first index is 1-6 (each of the faces)
++      !!! - west  : 1
++      !!! - east  : 2
++      !!! - south : 3
++      !!! - north : 4
++      !!! - bottom: 5
++      !!! - top   : 6
+       REAL(MK)                , INTENT(IN   ) :: ghostsize
+       !!! The size (width) of the ghost layer.
+       REAL(MK), DIMENSION(:  ), POINTER       :: cost
+diff --git a/src/topo/ppm_topo_mkpart.f b/src/topo/ppm_topo_mkpart.f
+index 0706137..16bbb23 100644
+--- a/src/topo/ppm_topo_mkpart.f
++++ b/src/topo/ppm_topo_mkpart.f
+@@ -123,6 +123,12 @@
+       !!! Boundary conditions for the topology
+       !!!
+       !!! NOTE: first index is 1-6 (each of the faces)
++      !!! - west  : 1
++      !!! - east  : 2
++      !!! - south : 3
++      !!! - north : 4
++      !!! - bottom: 5
++      !!! - top   : 6
+       INTEGER                 , INTENT(IN   ) :: assig
+       !!! The type of subdomain-to-processor assignment. One of:
+       !!!
+diff --git a/src/topo/ppm_topo_mktree.f b/src/topo/ppm_topo_mktree.f
+index 711fdce..880016e 100644
+--- a/src/topo/ppm_topo_mktree.f
++++ b/src/topo/ppm_topo_mktree.f
+@@ -118,7 +118,13 @@
+       INTEGER , DIMENSION(:  ), INTENT(IN   ) :: bcdef
+       !!! Boundary conditions for the topology
+       !!!
+-      !!! first index is 1-6 (each of the faces)
++      !!! NOTE: first index is 1-6 (each of the faces)
++      !!! - west  : 1
++      !!! - east  : 2
++      !!! - south : 3
++      !!! - north : 4
++      !!! - bottom: 5
++      !!! - top   : 6
+       REAL(MK), DIMENSION(:  ), POINTER       :: cost
+       !!! Estimated cost associated with subdomains. Either user-defined on
+       !!! input or decomposition result on output. The cost of a subdomain
