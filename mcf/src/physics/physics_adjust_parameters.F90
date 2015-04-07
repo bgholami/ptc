@@ -439,7 +439,7 @@
            CALL boundary_get_iopatch_n(d_boundary, iopatch_n, stat_info_sub)
 
            IOghost_layer = mcf_IOghost_layer_coeff * cut_off
-           ewidth = cut_off
+           ewidth = 2.0_MK * cut_off
 
   
            DO j = 1, num_inout

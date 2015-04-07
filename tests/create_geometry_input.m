@@ -104,8 +104,8 @@ end
 
 %write output
 if (1)
-    outfile1 = 'geom_sorted.data';
-    outfile2 = 'geom_sorted_tec.csv';
+    outfile1 = 'geom_CCA01_sorted.data';
+    outfile2 = 'geom_CCA01_sorted_tec.csv';
     write_arbitrary_data_sorted(outfile1, outfile2, sv, svertex_flist, sfacet_vlist, sfnormal, dx, divs, sort_cor)
 end
 

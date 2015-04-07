@@ -50,7 +50,7 @@
         
         INTEGER                                 :: num_dim, min_patch
         REAL(MK)                                :: dist, max_dist
-        REAL(MK), DIMENSION(3)                  :: r
+        REAL(MK), DIMENSION(3)                  :: r, distList
         INTEGER                                 :: j
         
         !----------------------------------------------------
@@ -72,16 +72,22 @@
            DO j = 1, this%num_inout
 
               r = p_x(1:num_dim) - this%ref_point(j, 1:num_dim)
-              dist = SQRT(DOT_PRODUCT(r(1:num_dim), r(1:num_dim)))
+              distList(j) = SQRT(DOT_PRODUCT(r(1:num_dim), r(1:num_dim)))
 
-              max_dist = SQRT((2.0_MK * this%clength(j))**2.0_MK + this%bwidth**2.0_MK)
+              !max_dist = SQRT((2.0_MK * this%clength(j))**2.0_MK + (this%bwidth + this%ewidth)**2.0_MK)
 
-              IF (dist <= max_dist) THEN
-                 min_patch = j
-                 EXIT
-              END IF
+              !IF (dist <= max_dist) THEN
+              !   min_patch = j
+              !   EXIT
+              !END IF
 
            END DO
+
+           j = MINLOC(distList, 1)
+           max_dist = SQRT((2.0_MK * this%clength(j))**2.0_MK + (this%bwidth + this%ewidth)**2.0_MK)
+           IF (distList(j)  <= max_dist) THEN  
+              min_patch = j
+           END IF
 
            IF (min_patch == 0) THEN
 

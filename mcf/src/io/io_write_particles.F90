@@ -98,6 +98,10 @@
         REAL(MK)                                :: time_routine_start
 #endif
 
+        TYPE(Boundary), POINTER                 :: d_boundary
+        INTEGER                                 :: j, patch_id
+        REAL(MK)                                :: distance
+
 	!----------------------------------------------------
       	! Initialization of variables.
       	!----------------------------------------------------
@@ -116,6 +120,7 @@
         NULLIFY(f)
         NULLIFY(u)
         NULLIFY(output)
+        NULLIFY(d_boundary)
         
 #ifdef __DEBUG
         debug_flag = debug_get_flag(global_debug,stat_info_sub)
@@ -136,7 +141,9 @@
         read_external   = &
              control_get_read_external(this%ctrl,stat_info_sub)
         p_energy        = &
-             control_get_p_energy(this%ctrl,stat_info_sub)
+             control_get_p_energy(this%ctrl,stat_info_sub) 
+
+        CALL physics_get_boundary(this%phys,d_boundary,stat_info_sub)
 
         if (num_part > 0) then
            CALL particles_get_x(d_particles,x,num_part,stat_info)
@@ -152,9 +159,23 @@
 #ifdef __WRITE_FORCE
            CALL particles_get_f(d_particles,f,num_part,stat_info)
 #endif
-           
+
            CALL particles_get_id(d_particles,id,num_part,stat_info)
-           
+
+           ! fix id for inlet/outlet BC particles
+           DO j = 1, num_part    
+              IF (id(d_particles%sid_idx, j) == mcf_particle_type_fluid) THEN
+                 distance = 0.0_MK
+                 patch_id = 0
+                 CALL boundary_check_particle_stat(d_boundary, &
+                      x(1:num_dim, j), 0, distance, patch_id, stat_info_sub)
+
+                 IF (distance /= 0.0_MK) THEN
+                    id(d_particles%bid_idx, j) = patch_id
+                 END IF
+              END IF
+           END DO
+
            IF( p_energy ) THEN
               CALL particles_get_u(d_particles,u,num_part,stat_info)
            END IF
