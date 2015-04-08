@@ -97,10 +97,11 @@
         TYPE(Boundary), POINTER                 :: d_boundary  
         INTEGER                                 :: num_inout
         INTEGER , DIMENSION(:)  , POINTER       :: num_iopoints
+        REAL(MK), DIMENSION(:,:), POINTER       :: ref_point
         REAL(MK), DIMENSION(:,:), POINTER       :: iopatch_n   
         REAL(MK), DIMENSION(:,:,:), POINTER     :: iopatch_x
         INTEGER, DIMENSION(6)                   :: num_part_IOghost
-        
+        REAL(MK), DIMENSION(3)                  :: radial_vec
 
 
         !----------------------------------------------------
@@ -126,6 +127,7 @@
 
 
         NULLIFY(num_iopoints)
+        NULLIFY(ref_point)
         NULLIFY(iopatch_n)  
         NULLIFY(iopatch_x)     
 
@@ -437,6 +439,7 @@
            CALL boundary_get_num_iopoints(d_boundary, num_iopoints, stat_info_sub)
            CALL boundary_get_iopatch_x(d_boundary, iopatch_x, stat_info_sub) 
            CALL boundary_get_iopatch_n(d_boundary, iopatch_n, stat_info_sub)
+           CALL boundary_get_ref_point(d_boundary, ref_point, stat_info_sub)
 
            IOghost_layer = mcf_IOghost_layer_coeff * cut_off
            ewidth = 2.0_MK * cut_off
@@ -445,6 +448,11 @@
            DO j = 1, num_inout
 
               DO vi =  1, num_iopoints(j) 
+
+                 ! first extend each iopatch_x point in the radial direction
+                 radial_vec(1:num_dim) = iopatch_x(j, 1:num_dim, vi) - ref_point(j, 1:num_dim) ! radial vector
+                 radial_vec = radial_vec / SQRT(DOT_PRODUCT(radial_vec, radial_vec)) ! normalized
+                 iopatch_x(j, 1:num_dim, vi) = iopatch_x(j, 1:num_dim, vi) + 1.05 * cut_off * radial_vec
 
                  ! compute extended position (with -iopatch_n to point outward)
                  ext_pos(1:num_dim) = iopatch_x(j, 1:num_dim, vi) - &
@@ -714,7 +722,11 @@
 
         IF(ASSOCIATED(num_iopoints)) THEN
            DEALLOCATE(num_iopoints)
-        END IF   
+        END IF
+
+        IF(ASSOCIATED(ref_point)) THEN
+           DEALLOCATE(ref_point)
+        END IF     
 
         IF(ASSOCIATED(iopatch_x)) THEN
            DEALLOCATE(iopatch_x)
