@@ -29,3 +29,6 @@
 
 # linux stuff
 *~
+
+prefix-O2/
+tests/old_tests/
