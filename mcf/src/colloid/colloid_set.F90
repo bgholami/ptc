@@ -2023,11 +2023,17 @@ SUBROUTINE colloid_arbitrary_distance(this, sort, col_index, p_x, out_distance, 
   INTEGER               , INTENT(OUT)   :: fi
   INTEGER               , INTENT(OUT)   :: stat_info 
 
+  INTEGER                              :: num_inout
+  INTEGER , DIMENSION(:)  , POINTER    :: num_iopoints
+  REAL(MK)                             :: bwidth, ewidth
+  REAL(MK), DIMENSION(:,:)  , POINTER  :: iopatch_n  
+  REAL(MK), DIMENSION(:,:,:), POINTER  :: iopatch_x
+
   INTEGER                               :: num_dim, num_vperf, max_degree
   INTEGER                               :: px_dim, N_interface, min_dist
   INTEGER                               :: i, j, closest_i, ii, jj, vi
   INTEGER                               :: istart, iend, sloc
-  REAL(MK)                              :: closest_d, d, distance 
+  REAL(MK)                              :: closest_d, d, distance, ds
   REAL(MK)                              :: bary_u, bary_v
   REAL(MK), ALLOCATABLE, DIMENSION(:,:) :: x_point  
   REAL(MK), ALLOCATABLE, DIMENSION(:)   :: projection_point, lambda
@@ -2050,7 +2056,15 @@ SUBROUTINE colloid_arbitrary_distance(this, sort, col_index, p_x, out_distance, 
      stat_info = -1
      GOTO 9999
 
-  END IF
+  END IF  
+
+  num_inout = boundary_get_num_inout(this%boundary, stat_info_sub)
+  CALL boundary_get_num_iopoints(this%boundary, &
+       num_iopoints, stat_info_sub)
+  bwidth = boundary_get_bwidth(this%boundary, stat_info_sub)  
+  ewidth = boundary_get_ewidth(this%boundary, stat_info_sub)
+  CALL boundary_get_iopatch_n(this%boundary, iopatch_n, stat_info_sub)
+  CALL boundary_get_iopatch_x(this%boundary, iopatch_x, stat_info_sub)
 
 
   max_degree =  SIZE(this%coll_v_flist, 2)
@@ -2096,6 +2110,27 @@ SUBROUTINE colloid_arbitrary_distance(this, sort, col_index, p_x, out_distance, 
            END IF
         END DO
 
+     END DO
+
+     ! search extensions of domain (in case of inflow/outflow BC)
+     DO j = 1, num_inout
+        DO i = 1, num_iopoints(j)
+           DO jj = 1, 20
+
+              ds = (bwidth + ewidth) * DBLE(jj) / 20.0_MK 
+              d_temp = iopatch_x(j, 1:num_dim, i) - &
+                   ds * iopatch_n(j, 1:num_dim) - &
+                   p_x(1:num_dim)
+              d = DOT_PRODUCT(d_temp, d_temp)
+              d = d ** 0.50_MK 
+
+              IF (d < closest_d) THEN
+                 closest_d = d
+                 closest_i = this%coll_ioIndex(j, i)
+              END IF
+
+           END DO
+        END DO
      END DO
 
   END IF
@@ -2193,6 +2228,91 @@ SUBROUTINE colloid_arbitrary_distance(this, sort, col_index, p_x, out_distance, 
 
 9999 CONTINUE
 
-     RETURN
+  
+  IF(ASSOCIATED(num_iopoints)) THEN
+     DEALLOCATE(num_iopoints)
+  END IF
 
-   END SUBROUTINE colloid_arbitrary_distance
+  IF(ASSOCIATED(iopatch_n)) THEN
+     DEALLOCATE(iopatch_n)
+  END IF
+
+  IF(ASSOCIATED(iopatch_x)) THEN
+     DEALLOCATE(iopatch_x)
+  END IF
+
+  RETURN
+
+END SUBROUTINE colloid_arbitrary_distance
+
+
+SUBROUTINE colloid_set_ioIndex(this, stat_info)
+
+  !-----------------------------------------
+  ! Set ioIndex: find index conversion 
+  ! between colocating this%boundary%iopatch 
+  ! and this%coll_v
+  !-----------------------------------------    
+  
+  TYPE(Colloid)         , INTENT(INOUT)   :: this
+  INTEGER               , INTENT(OUT)  :: stat_info
+
+  INTEGER                              :: stat_info_sub
+  INTEGER                              :: num_dim, i, j, ii
+  INTEGER                              :: sloc, istart, iend
+  REAL(MK), DIMENSION(3)               :: d_temp
+  REAL(MK)                             :: d  
+  INTEGER                              :: num_inout
+  INTEGER , DIMENSION(:)  , POINTER    :: num_iopoints  
+  REAL(MK), DIMENSION(:,:,:), POINTER  :: iopatch_x
+
+  stat_info = 0
+  stat_info_sub = 0
+
+  num_dim = this%num_dim
+  num_inout = boundary_get_num_inout(this%boundary, stat_info_sub)
+  CALL boundary_get_num_iopoints(this%boundary, &
+       num_iopoints, stat_info_sub)
+  CALL boundary_get_iopatch_x(this%boundary, iopatch_x, stat_info_sub)
+
+
+  ALLOCATE(this%coll_ioIndex(num_inout, MAXVAL(num_iopoints)))
+  this%coll_ioIndex = 0
+
+  DO j = 1, num_inout
+     DO i = 1, num_iopoints(j)
+
+        ! using sort data
+        sloc = FLOOR((iopatch_x(j, this%coll_sco, i) - &
+             this%min_phys(this%coll_sco)) / this%coll_sdx) + 1
+        sloc = MAX(sloc, 1)
+        istart = this%coll_sid(sloc) + 1
+        iend   = this%coll_sid(sloc+1)
+
+        DO ii = istart, iend
+
+           d_temp =  this%coll_v(1, 1:num_dim, ii) - iopatch_x(j, 1:num_dim, i)
+           d = DOT_PRODUCT(d_temp, d_temp)
+           d = d ** 0.50_MK
+           IF (d <= mcf_machine_zero) THEN
+              this%coll_ioIndex(j, i) = ii
+              EXIT
+           END IF
+        END DO
+
+     END DO
+  END DO
+
+9999 CONTINUE        
+
+  IF(ASSOCIATED(num_iopoints)) THEN
+     DEALLOCATE(num_iopoints)
+  END IF
+
+  IF(ASSOCIATED(iopatch_x)) THEN
+     DEALLOCATE(iopatch_x)
+  END IF
+
+  RETURN
+
+END SUBROUTINE colloid_set_ioIndex

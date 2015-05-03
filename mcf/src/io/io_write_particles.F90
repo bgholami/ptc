@@ -161,24 +161,27 @@
 #endif
 
            CALL particles_get_id(d_particles,id,num_part,stat_info)
+           
+           if ( 0 == 0) then
+              ! fix id for inlet/outlet BC particles
+              DO j = 1, num_part    
+                 IF (id(d_particles%sid_idx, j) == mcf_particle_type_fluid) THEN
+                    distance = 0.0_MK
+                    patch_id = 0
+                    CALL boundary_check_particle_stat(d_boundary, &
+                         x(1:num_dim, j), 0, distance, patch_id, stat_info_sub)
 
-           ! fix id for inlet/outlet BC particles
-           DO j = 1, num_part    
-              IF (id(d_particles%sid_idx, j) == mcf_particle_type_fluid) THEN
-                 distance = 0.0_MK
-                 patch_id = 0
-                 CALL boundary_check_particle_stat(d_boundary, &
-                      x(1:num_dim, j), 0, distance, patch_id, stat_info_sub)
-
-                 IF (distance /= 0.0_MK) THEN
-                    id(d_particles%bid_idx, j) = patch_id
+                    IF (distance /= 0.0_MK) THEN
+                       id(d_particles%bid_idx, j) = patch_id
+                    END IF
+                    rho(j) = distance
                  END IF
-              END IF
-           END DO
+              END DO
 
-           IF( p_energy ) THEN
-              CALL particles_get_u(d_particles,u,num_part,stat_info)
-           END IF
+              IF( p_energy ) THEN
+                 CALL particles_get_u(d_particles,u,num_part,stat_info)
+              END IF
+           end if
 
         else   
 

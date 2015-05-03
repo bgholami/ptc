@@ -315,7 +315,7 @@ SUBROUTINE particles_init_partial_inter_adjust(this, stat_info)
 
                     !counted_colloid = .TRUE.
                     counted_ignore = .TRUE.
-
+                    
                  END IF ! .NOT. l_in
 
               ELSE IF( l_out  ) THEN
@@ -368,8 +368,8 @@ SUBROUTINE particles_init_partial_inter_adjust(this, stat_info)
                       this%x(1:num_dim, j), 1, distance, patch_id, stat_info_sub)
 
 
-                 IF (ABS(distance) <= bwidth) THEN  
-
+                 IF (ABS(distance) <= bwidth) THEN
+                
                     num = num + 1
                     tx(1:num_dim,num)     = this%x(1:num_dim,j)
                     tv(1:num_dim,num)     = 0.0_MK

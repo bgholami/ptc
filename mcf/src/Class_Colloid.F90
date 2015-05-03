@@ -251,6 +251,10 @@
            !         : coordinate used for sorting (1, 2, or 3)
            ! coll_sid
            !         : start/end ids of vertices in each division
+           ! coll_
+           !         : in case of inflow/outlfow BC, coll_ioIndex
+           !           converts indices of boundary patches, i.e. 
+           !           boundary%iopatch_x, to indices of coll_v 
            !-------------------------------------------------
            INTEGER                              :: coll_arbitrary_num
            REAL(MK), DIMENSION(:,:,:), POINTER  :: coll_v 
@@ -264,6 +268,7 @@
            INTEGER                              :: coll_snum 
            INTEGER                              :: coll_sco
            INTEGER, DIMENSION(:)     , POINTER  :: coll_sid
+           INTEGER, DIMENSION(:,:)   , POINTER  :: coll_ioIndex
            
            
            

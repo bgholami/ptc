@@ -1733,6 +1733,8 @@
 
               CALL colloid_set_arbitrary(colloids, &
                    arbitrary_index, coll_arbitrary_file, stat_info_sub)
+
+              CALL colloid_set_ioIndex(colloids, stat_info_sub)
               
               
            END IF
