@@ -452,7 +452,7 @@
                  ! first extend each iopatch_x point in the radial direction
                  radial_vec(1:num_dim) = iopatch_x(j, 1:num_dim, vi) - ref_point(j, 1:num_dim) ! radial vector
                  radial_vec = radial_vec / SQRT(DOT_PRODUCT(radial_vec, radial_vec)) ! normalized
-                 iopatch_x(j, 1:num_dim, vi) = iopatch_x(j, 1:num_dim, vi) + 1.05 * cut_off * radial_vec
+                 iopatch_x(j, 1:num_dim, vi) = iopatch_x(j, 1:num_dim, vi) + mcf_wall_layer_coeff * cut_off * radial_vec
 
                  ! compute extended position (with -iopatch_n to point outward)
                  ext_pos(1:num_dim) = iopatch_x(j, 1:num_dim, vi) - &

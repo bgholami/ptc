@@ -365,7 +365,7 @@ SUBROUTINE particles_init_partial_inter_adjust(this, stat_info)
                  distance = 0.0_MK
                  patch_id = 0
                  CALL boundary_check_particle_stat(d_boundary, &
-                      this%x(1:num_dim, j), 1, distance, patch_id, stat_info_sub)
+                      this%x(1:num_dim, j), -1, distance, patch_id, stat_info_sub)
 
 
                  IF (ABS(distance) <= bwidth) THEN
@@ -389,7 +389,7 @@ SUBROUTINE particles_init_partial_inter_adjust(this, stat_info)
                  distance = 0.0_MK
                  patch_id = 0
                  CALL boundary_check_particle_stat(d_boundary, &
-                      this%x(1:num_dim, j), 1, distance, patch_id, stat_info_sub)
+                      this%x(1:num_dim, j), -1, distance, patch_id, stat_info_sub)
 
                  ! set boundary_id 
                  ! (corresponding d_boundary%patch_id inflow and outflow, 0 for interior)

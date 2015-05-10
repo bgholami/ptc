@@ -3,7 +3,7 @@
 ###################################
 KNOWN_SYSTEM=no
 
-SYSTEM=mitsuko
+SYSTEM=jostalkingcomputer
 
 ifeq ($(SYSTEM), ice)
 -include Makefile.ice
@@ -27,6 +27,10 @@ KNOWN_SYSTEM=yes
 endif
 ifeq ($(SYSTEM), mitsuko)
 -include Makefile.mitsuko
+KNOWN_SYSTEM=yes
+endif
+ifeq ($(SYSTEM), jostalkingcomputer)
+-include Makefile.jostalkingcomputer
 KNOWN_SYSTEM=yes
 endif
 
@@ -55,10 +59,11 @@ COMPILERSETTINGS = $(DEFINE) $(DIM_FLAG) $(KERNEL_FLAG) $(OTHER)
 #----------------------------------------------------------------------
 #  Compiler settings
 #----------------------------------------------------------------------
-INC = -I$(PPM_BASE)/include/ppm -I$(MOD_DIR) -I. -Isrc/boundary -Isrc/colloid -Isrc/control -Isrc/debug -Isrc/io -Isrc/kernel -Isrc/marching -Isrc/particles -Isrc/physics -Isrc/random -Isrc/rhs -Isrc/stateEquatin -Isrc/statistic -Isrc/technique -Isrc/tool -Isrc/tracers
+INC = -I$(PPM_BASE)/include/ppm -I$(MOD_DIR) -I. -Isrc/boundary -Isrc/colloid -Isrc/control -Isrc/debug -Isrc/io -Isrc/kernel -Isrc/marching -Isrc/particles -Isrc/physics -Isrc/random -Isrc/rhs -Isrc/stateEquation -Isrc/statistic -Isrc/technique -Isrc/tool -Isrc/tracers
 FFLAGS1	= $(INC) $(COMPILERSETTINGS) $(COMPILEROPTION) 
 #IFORT FLAG:
-FFLAGS2	= -module $(MOD_DIR)
+#FFLAGS2	= -module $(MOD_DIR)
+FFLAGS2	= -J $(MOD_DIR)
 #GFORTRAN FLAG:
 FFLAGS	= $(FFLAGS1) $(FFLAGS2)
 LIBS    = -lppm -lmetis -lmpich
