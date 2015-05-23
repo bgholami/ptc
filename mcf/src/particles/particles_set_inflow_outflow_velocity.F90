@@ -145,22 +145,21 @@ SUBROUTINE particles_set_inflow_outflow_velocity(this, num, stat_info)
 
         ! simple averaging over space
         indtl = indt
-        vl(1:num_dim) = (BC_vel(j, 1:num_dim, indtl, indx) + &
-             BC_vel(j, 1:num_dim, indtl, indx+1) + &
-             BC_vel(j, 1:num_dim, indtl, indx+num_grid(j, 2)) + &      
-             BC_vel(j, 1:num_dim, indtl, indx+num_grid(j, 2)+1)) / 4.0_MK        
+        vl(1:num_dim) = (get_value(BC_vel, j, num_dim, indtl, indx) + &
+             get_value(BC_vel, j, num_dim, indtl, indx+1) + &
+             get_value(BC_vel, j, num_dim, indtl, indx+num_grid(j, 2)) + &      
+             get_value(BC_vel, j, num_dim, indtl, indx+num_grid(j, 2)+1)) / 4.0_MK        
 
         indtr = indt + 1
         indtr = MOD(indtr-1, num_time) + 1
-        vr(1:num_dim) = (BC_vel(j, 1:num_dim, indtr, indx) + &
-             BC_vel(j, 1:num_dim, indtr, indx+1) + &
-             BC_vel(j, 1:num_dim, indtr, indx+num_grid(j, 2)) + &      
-             BC_vel(j, 1:num_dim, indtr, indx+num_grid(j, 2)+1)) / 4.0_MK
+        vr(1:num_dim) = (get_value(BC_vel, j, num_dim, indtr, indx) + &
+             get_value(BC_vel, j, num_dim, indtr, indx+1) + &
+             get_value(BC_vel, j, num_dim, indtr, indx+num_grid(j, 2)) + &      
+             get_value(BC_vel, j, num_dim, indtr, indx+num_grid(j, 2)+1)) / 4.0_MK
 
         ! linear interpolation over time
         vt(1:num_dim) = vl(1:num_dim) * (1.0_MK - t_add/dt_pulse) + &
              vr(1:num_dim) * (t_add/dt_pulse)
-
 
         IF (time >= tstart) THEN
 
@@ -168,11 +167,11 @@ SUBROUTINE particles_set_inflow_outflow_velocity(this, num, stat_info)
            CALL physics_set_tracers_c_factor(this%phys, 5, stat_info_sub)
 #endif  
            ! velocity profile
-           this%v(1:num_dim, ip) = 0.0_MK * vt(1:num_dim)
-
+           this%v(1:num_dim, ip) = vt(1:num_dim)
+           
         ELSE
 
-           this%v(1:num_dim, ip) = 0.0_MK * vt(1:num_dim) * time / tstart
+           this%v(1:num_dim, ip) = vt(1:num_dim) * time / tstart
 
 
         END IF
@@ -216,4 +215,33 @@ SUBROUTINE particles_set_inflow_outflow_velocity(this, num, stat_info)
   RETURN
 
 END SUBROUTINE particles_set_inflow_outflow_velocity
+
+
+FUNCTION get_value(t_array, ind1, num_dim, ind3, ind4)
+
+  REAL(MK), DIMENSION(:,:,:,:), POINTER  :: t_array 
+  INTEGER, INTENT(IN)                    :: ind1  
+  INTEGER, INTENT(IN)                    :: num_dim
+  INTEGER, INTENT(IN)                    :: ind3
+  INTEGER, INTENT(IN)                    :: ind4
+  REAL(8), DIMENSION(num_dim)            :: get_value
+
+  IF ( (ind1 > 0)                 .AND. &  
+       (ind1 <= SIZE(t_array, 1)) .AND. &
+       (ind3 > 0)                 .AND. &  
+       (ind3 <= SIZE(t_array, 3)) .AND. &
+       (ind4 > 0)                 .AND. &
+       (ind4 <= SIZE(t_array, 4))) THEN
+
+     get_value = t_array(ind1, 1:num_dim, ind3, ind4)
+
+  ELSE
+
+     get_value = 0.0_MK
+
+  END IF
+
+  RETURN
+
+END FUNCTION get_value
 

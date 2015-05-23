@@ -54,7 +54,6 @@ if (1)
     sfnormal = fnormal;
     
     % find the smallest dx larger than dnear_wall that suits the geometry
-    %dnear_wall = 6.0844100E-001; % mm
     dx = dnear_wall * 1.1;
     
     xmin = min(sv(:, sort_cor));

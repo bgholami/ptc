@@ -707,7 +707,7 @@
 
         END DO
 
-        CLOSE(10)
+        CLOSE(10) 
 
         ! calculate ref_point
         DO j = 1, this%num_inout

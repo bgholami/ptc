@@ -67,7 +67,7 @@ SUBROUTINE boundary_check_particle_stat(this, &
   IF (this%num_inout > 0) THEN
 
      ALLOCATE(proj_vec(this%num_inout))
-     IF (mode == -1) THEN
+     IF ((mode == -1) .OR. (mode == -2)) THEN
         ! find out if projection in patch
         min_dist = 10000.0_MK * this%bwidth
         min_patch = 0
@@ -87,6 +87,29 @@ SUBROUTINE boundary_check_particle_stat(this, &
            END IF
 
         END DO
+
+
+        IF (mode == -1) THEN
+           IF (min_patch == 0) THEN        
+
+              DO j = 1, this%num_inout
+                 r = p_x(1:num_dim) - this%ref_point(j, 1:num_dim)
+                 distList(j) = SQRT(DOT_PRODUCT(r(1:num_dim), r(1:num_dim)))
+              END DO
+              j = MINLOC(distList, 1)
+              r = p_x(1:num_dim) - this%ref_point(j, 1:num_dim)
+              dist = DOT_PRODUCT(r(1:num_dim), this%iopatch_n(j, 1:num_dim)) 
+              IF (dist >= 0.0_MK) THEN       
+                 min_patch = 0
+              ELSE
+                 min_patch = j
+              END IF
+
+           ELSE
+
+           END IF
+        END IF
+
 
         IF (min_patch == 0) THEN
            distance = 0.0_MK

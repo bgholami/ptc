@@ -2046,6 +2046,10 @@ SUBROUTINE colloid_arbitrary_distance(this, sort, col_index, p_x, out_distance, 
   stat_info = 0
   stat_info_sub = 0
 
+  NULLIFY(num_iopoints)
+  NULLIFY(iopatch_n)
+  NULLIFY(iopatch_x)
+
   num_dim = this%num_dim  
   num_vperf = num_dim
   px_dim = SIZE(p_x)
@@ -2267,7 +2271,10 @@ SUBROUTINE colloid_set_ioIndex(this, stat_info)
   REAL(MK), DIMENSION(:,:,:), POINTER  :: iopatch_x
 
   stat_info = 0
-  stat_info_sub = 0
+  stat_info_sub = 0        
+
+  NULLIFY(num_iopoints)
+  NULLIFY(iopatch_x)     
 
   num_dim = this%num_dim
   num_inout = boundary_get_num_inout(this%boundary, stat_info_sub)

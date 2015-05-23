@@ -25,8 +25,8 @@ c = 0;
 for j = 1:size(X, 1)
     for k = 1:size(X, 2)
         c = c + 1;
-        vx(j, k, 1) = X(j, k);
-        vx(j, k, 2) = Y(j, k);
+        vx(k, j, 1) = X(j, k);
+        vx(k, j, 2) = Y(j, k);
     end
 end
 

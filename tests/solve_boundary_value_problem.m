@@ -71,7 +71,9 @@ for n = 0:N
     % normalize
     [~, vpos] = max(abs(real(v(:, 1)))); % max of zeroth mode
     %vpos = 1;
-    v(:, n+1) = v(:, n+1) / v(vpos, n+1);
+    if (v(vpos, n+1) ~= 0)
+        v(:, n+1) = v(:, n+1) / v(vpos, n+1);
+    end
     
 end
 vx = vx(mfi>0, :);

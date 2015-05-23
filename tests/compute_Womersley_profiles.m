@@ -13,7 +13,7 @@ U = compute_complex_amplitudes(velocity_waveform, 1000);
 
 % reshape data
 for j = 1:2
-    tvx(:, j) = reshape(pp(:, :, j)', size(pp, 1)*size(pp, 2), 1);
+    tvx(:, j) = reshape(pp(:, :, j), size(pp, 1)*size(pp, 2), 1);
 end
 
 % solve the boundary value problem
@@ -26,7 +26,7 @@ for it = 1:length(time)
         wn = 2*pi*n/T;
         u = u + 2 * real(U(n+1) * v(:, n+1) * exp(1i * wn * time(it)));
     end
-    
+    %sum(isnan(u))
     tbcv = zeros(length(tvx), 1);
     tbcv(mif) = u;
     bc_velocity(it, :, :) = reshape(tbcv, size(pp, 1), size(pp, 2));

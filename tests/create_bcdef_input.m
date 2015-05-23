@@ -45,13 +45,13 @@ for i = 1:num_inout
         bctp(ii, :) = patch(i).px(ii, :) / A;
     end
     
-    lim1 = [min(bctp(:, 1)), max(bctp(:, 1))];
-    lim2 = [min(bctp(:, 2)), max(bctp(:, 2))];
+    pre_lim1 = [min(bctp(:, 1)), max(bctp(:, 1))];
+    pre_lim2 = [min(bctp(:, 2)), max(bctp(:, 2))];
     
-    dx = min(lim1(2)-lim1(1), lim2(2)-lim2(1)) / (min_num_grid-1);
+    dx = min(pre_lim1(2)-pre_lim1(1), pre_lim2(2)-pre_lim2(1)) / (min_num_grid-1);
     
-    [num_grid1, lim1] = fix_grid_range(lim1, dx);
-    [num_grid2, lim2] = fix_grid_range(lim2, dx);
+    [num_grid1, lim1] = fix_grid_range(pre_lim1, dx);
+    [num_grid2, lim2] = fix_grid_range(pre_lim2, dx);
     
     x1 = linspace(lim1(1), lim1(2), num_grid1);
     x2 = linspace(lim2(1), lim2(2), num_grid2);
@@ -78,9 +78,11 @@ for i = 1:num_inout
     end
     
     patch(i).p = pp;
-    
+    pptp(:, :, 1:2)
+    bctp(:, 1:2)
     % velocities at patch over time
     bc_normal_velocity = compute_Womersley_profiles(pptp(:, :, 1:2), bctp(:, 1:2), time, T, mu, input_file_list{i});
+    max(max(max(bc_normal_velocity)))
     for it = 1:length(time)
         for ii = 1:num_grid1
             for jj = 1:num_grid2
@@ -126,14 +128,16 @@ nv = dn * sign(dot(dn, temp_v));
 end
 
 
-function [num_grid, lim] = fix_grid_range(lim, dx)
+function [num_grid_out, lim_out] = fix_grid_range(flim, fdx)
 
-num_grid = (lim(2) - lim(1)) / dx + 1;
-if (num_grid ~= ceil(num_grid))
-    dlim = (ceil(num_grid) - num_grid) * dx / 2.0;
-    lim(1) = lim(1) - dlim;
-    lim(2) = lim(2) + dlim;
-    num_grid = (lim(2) - lim(1)) / dx + 1;
-end
+fnum_grid = (flim(2) - flim(1)) / fdx + 1;
+% if (rem(fnum_grid, 1) ~= 0)
+%     dlim = (ceil(fnum_grid) - fnum_grid) * fdx / 2.0;
+%     flim(1) = flim(1) - dlim;
+%     flim(2) = flim(2) + dlim;
+%     fnum_grid = ceil(fnum_grid);
+% end
+num_grid_out = round(fnum_grid);
+lim_out = flim;
 
 end

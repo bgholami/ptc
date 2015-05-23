@@ -5,7 +5,7 @@ num_time = length(time);
 
 fid = fopen(outfile, 'w');
 fprintf(fid,'%d %d\n', num_inflow, num_outflow);
-fprintf(fid,'%d %d %d\n', size(patch(1).px, 2), size(patch(2).px, 2), size(patch(3).px, 2)); % write all patches in one line
+fprintf(fid,'%d %d %d\n', size(patch(1).px, 1), size(patch(2).px, 1), size(patch(3).px, 1)); % write all patches in one line
 fprintf(fid,'%d ', id);
 fprintf(fid,'\n');
 
