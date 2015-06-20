@@ -102,8 +102,8 @@
 
                  this%x(1:dim,i) = &
                       this%x(1:dim,i) + &
-                      this%v(1:dim,i) * dt +&
-                      0.5_MK * this%f_bp(1:dim,i) * dt**2
+                      this%v(1:dim,i) * dt  !+ &
+                      !0.5_MK * this%f_bp(1:dim,i) * dt**2
 
               END IF
               

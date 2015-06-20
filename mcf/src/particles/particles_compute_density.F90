@@ -404,8 +404,14 @@
                  ! Fluid particle.
                  !-------------------------------------------
                  
-                 this%rho(j) = w * this%m(j)
-                 
+                 IF ( this%id(this%bid_idx,j) == 0 ) THEN
+                    ! normal (interior) fluid particles
+                    this%rho(j) = w * this%m(j)
+                 ELSE
+                    ! constant density for inflow/outflow boundary buffers
+                    this%rho(j) = init_density
+                 END IF
+
               ELSE IF ( this%id(this%sid_idx,j) < 0 ) THEN
                  
                  !-------------------------------------------
@@ -486,7 +492,11 @@
                  ! Fluid particle.
                  !-------------------------------------------
                  
-                 this%rho(j) = w
+                 IF ( this%id(this%bid_idx,j) == 0 ) THEN
+                    this%rho(j) = w
+                 ELSE  
+                    this%rho(j) = init_density / this%m(j)
+                 END IF
                  
               ELSE IF ( this%id(this%sid_idx,j) < 0 ) THEN
                  
@@ -728,6 +738,20 @@
                              
                              CYCLE
                              
+                          END IF        
+
+                          !----------------------------------
+                          ! If ip fluid inflow/outflow boundary
+                          ! particle for non-symmetric 
+                          ! inteaction, cycle the loop.
+                          !----------------------------------
+                          
+                          IF( this%id(this%sid_idx,ip) == 0 .AND. &
+                               this%id(this%bid_idx,ip) /= 0 .AND. &
+                               ( .NOT. symmetry) ) THEN
+                             
+                             CYCLE
+                             
                           END IF
                           
                           !----------------------------------
@@ -776,6 +800,20 @@
                                   wall_rho_type==mcf_wall_rho_type_constant .AND. &
                                   coll_rho_type==mcf_colloid_rho_type_constant ) THEN
                                 CYCLE
+                             END IF                             
+
+                             !-------------------------------
+                             ! inflow/outflow boundary particles 
+                             ! have constant rho, therefore 
+                             ! no contribution to each other.
+                             !-------------------------------
+                             
+                             IF ( this%id(this%sid_idx,ip) == 0 .AND. &
+                                  this%id(this%sid_idx,jp) == 0 .AND. & 
+                                  this%id(this%bid_idx,ip) /= 0 .AND. &
+                                  this%id(this%bid_idx,jp) /= 0 ) THEN
+                                  
+                                CYCLE
                              END IF
                              
                              !-------------------------------
@@ -813,12 +851,13 @@
                              
                              !-------------------------------
                              ! Density calculated for
-                             ! fluid particles, or
-                             ! boundary particle without
+                             ! fluid particles (non-inflow/outflow), 
+                             ! or boundary particle without
                              ! constant density type.
                              !-------------------------------
                              
-                             IF ( this%id(this%sid_idx,ip) == 0 .OR. &
+                             IF ( (this%id(this%sid_idx,ip) == 0 .AND. &
+                                this%id(this%bid_idx,ip) == 0) .OR. &
                                   ( this%id(this%sid_idx,ip) < 0 .AND. &
                                   wall_rho_type==mcf_wall_rho_type_dynamic ) .OR. &
                                   ( this%id(this%sid_idx,ip) > 0 .AND. &
@@ -838,11 +877,12 @@
                              
                              !-------------------------------
                              ! For symmetry, jp also gets
-                             ! calculated(if it is fluid).
+                             ! calculated(if it is non-inflow/outflow fluid).
                              !-------------------------------
                              
                              IF ( symmetry .AND. &
-                                  ( this%id(this%sid_idx,jp) == 0 .OR. &
+                                  ( (this%id(this%sid_idx,jp) == 0 .AND. &
+                                  this%id(this%bid_idx,jp) == 0 ) .OR. &
                                   ( this%id(this%sid_idx,jp) < 0 .AND. &
                                   wall_rho_type ==mcf_wall_rho_type_dynamic ) .OR. &
                                   ( this%id(this%sid_idx,jp) > 0 .AND. &
