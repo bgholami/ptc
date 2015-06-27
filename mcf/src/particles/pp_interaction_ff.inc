@@ -13,7 +13,16 @@
   v_jp(1:num_dim) = this%v(1:num_dim,jp)
   
   IF ( Newtonian ) THEN
-     
+
+     if ((this%id(this%bid_idx, ip) == 0) .and. &
+          (this%id(this%bid_idx, jp) /= 0)) then
+        this%p(jp) = this%p(ip)
+     else if ((this%id(this%bid_idx, ip) /= 0) .and. &
+          (this%id(this%bid_idx, jp) == 0)) then
+        this%p(ip) = this%p(jp)
+     end if
+
+
      CALL rhs_force_ff(this%rhs, &
           this%x(1:num_dim,ip), &
           this%x(1:num_dim,jp),dij, &

@@ -14,12 +14,16 @@ input_inlet_vw = 'CCA_pulse/cca.csv';
 input_outlet1_vw = 'CCA_pulse/ica.csv';
 input_outlet2_vw = 'CCA_pulse/eca.csv';
 
-output_bc_definition = 'bcdef_CCA01.data';
+input_inlet_vw = 'CCA_constant/cca.csv';
+input_outlet1_vw = 'CCA_constant/ica.csv';
+input_outlet2_vw = 'CCA_constant/eca.csv';
+
+output_bc_definition = 'bcdef_CCA01_constant.data';
 output_geo_definition = 'geom_CCA01_sorted.data';
 
 % characteristic dx to determine number of patch grids
 T = 0.8896; % waveform period
-mu = 0.008; % viscosity
+mu = 0.03; % viscosity
 
 % time-varying velocity data
 min_num_grid = 11; % at least this many grid points in each direction
