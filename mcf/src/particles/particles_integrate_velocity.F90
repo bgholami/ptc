@@ -88,7 +88,13 @@ SUBROUTINE particles_integrate_velocity(this,&
 
         this%v(1:dim,i) = &
              this%v(1:dim,i) + &
-             lambda * this%f(1:dim,i) * dt  
+             lambda * this%f(1:dim,i) * dt
+
+        if (SQRT(DOT_PRODUCT(this%v(1:dim,i), this%v(1:dim,i))) > 400.0_MK) then
+           this%v(1:dim, i) = this%v(1:dim, i) * &
+                (400.0_MK / &
+                SQRT(DOT_PRODUCT(this%v(1:dim,i), this%v(1:dim,i))))
+        end if
 
      END IF
 

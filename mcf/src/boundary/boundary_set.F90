@@ -814,6 +814,7 @@
         ! at lease starts from iteration 10000 (with increaments of 10000)
         itr = CEILING(itr/10000.0_MK) * 10000.0_MK
         itr = 30000.0_MK
+        !itr = 1000.0_MK
         itr = 0.0_MK
         tstart = itr * dt
 

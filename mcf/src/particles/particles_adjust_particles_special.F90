@@ -118,6 +118,8 @@ SUBROUTINE particles_adjust_particles_special(this,num,stat_info)
            IF (ABS(distance) <= bwidth) THEN   
 
               ! inlet
+              ! optional? to cover interiors that come back to inlet buffer...
+              !this%id(this%bid_idx, j) = patch_id
               CONTINUE
 
            ELSE

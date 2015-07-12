@@ -167,7 +167,20 @@ SUBROUTINE particles_set_inflow_outflow_velocity(this, num, stat_info)
            CALL physics_set_tracers_c_factor(this%phys, 5, stat_info_sub)
 #endif  
            ! velocity profile
-           this%v(1:num_dim, ip) = vt(1:num_dim)
+           !this%v(1:num_dim, ip) = vt(1:num_dim)
+           if (this%id(this%bid_idx, ip) < 0) then
+              if (time < 1000.0_MK * 1.787500000000000E-006) then
+                 this%v(1:num_dim, ip) = 0.0_MK
+              elseif (time < 2000.0_MK * 1.787500000000000E-006) then
+                 this%v(1:num_dim, ip) = vt(1:num_dim) * &
+                      (time - (1000.0_MK * 1.787500000000000E-006)) / &
+                      (1000.0_MK * 1.787500000000000E-006)
+              else
+                 this%v(1:num_dim, ip) = vt(1:num_dim)
+              end if
+           else
+              this%v(1:num_dim, ip) = vt(1:num_dim)
+           end if
            
         ELSE
 

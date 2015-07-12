@@ -257,7 +257,7 @@
         cut_off2     = cut_off * cut_off
         init_density = &
              physics_get_rho(this%phys,stat_info_sub)
-        init_density = init_density * 1.0028039450_MK
+        !init_density = init_density * 1.0028039450_MK
         !----------------------------------------------------
         ! Boundary parameters :
         !----------------------------------------------------
