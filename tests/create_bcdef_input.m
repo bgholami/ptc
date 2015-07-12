@@ -78,10 +78,19 @@ for i = 1:num_inout
     end
     
     patch(i).p = pp;
-    pptp(:, :, 1:2)
-    bctp(:, 1:2)
     % velocities at patch over time
     bc_normal_velocity = compute_Womersley_profiles(pptp(:, :, 1:2), bctp(:, 1:2), time, T, mu, input_file_list{i});
+
+    v1 = 100;
+    v2 = 100;
+    if i == 1
+        bc_normal_velocity(:,:,:) = v1;
+    elseif i == 2
+        bc_normal_velocity(:,:,:) = v2;
+    else
+        bc_normal_velocity(:,:,:) = (v1 * 0.5700^2 - v2 * 0.3296^2) / (0.4104^2);
+    end
+    
     max(max(max(bc_normal_velocity)))
     for it = 1:length(time)
         for ii = 1:num_grid1
