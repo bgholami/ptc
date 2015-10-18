@@ -56,21 +56,37 @@
         !----------------------------------------------------
         ! Local variables
 	!----------------------------------------------------
-        INTEGER                                 :: stat_info_sub
-        INTEGER                                 :: dim, i
+        INTEGER                                 :: stat_info_sub 
+        TYPE(Boundary), POINTER                 :: d_boundary
+        REAL(MK), DIMENSION(:), POINTER         :: min_phys
+        REAL(MK), DIMENSION(:), POINTER         :: max_phys
+        INTEGER                                 :: dim, i, j, patch_id
+        REAL(MK), DIMENSION(:), ALLOCATABLE     :: new_x
+        REAL(MK)                                :: distance
+        LOGICAL                                 :: eliminate_particle
+
         
         !----------------------------------------------------
         ! Initialization of variables.
         !----------------------------------------------------
+
         
         stat_info     = 0
         stat_info_sub = 0
         
+        NULLIFY(d_boundary)
+        NULLIFY(min_phys)
+        NULLIFY(max_phys)
+        
         dim           = &
              physics_get_num_dim(this%phys,stat_info_sub)
+        CALL physics_get_boundary(this%phys,d_boundary,stat_info_sub)
+        CALL physics_get_min_phys(this%phys,min_phys,stat_info_sub)
+        CALL physics_get_max_phys(this%phys,max_phys,stat_info_sub)
+        ALLOCATE(new_x(dim))
 
 #ifdef __POSITION_FIXED
-        
+
 #else      
         !----------------------------------------------------
         ! Select different accuracy oder
@@ -78,49 +94,70 @@
         ! 2 velocity + acceleration contribution. (transport velocity)
         !----------------------------------------------------
 
-        SELECT CASE (accuracy_order)
-           
-        CASE (1)
-           
-           DO i = 1, num
-              
-              IF ( this%id(this%sid_idx,i) == mcf_particle_type_fluid) THEN
+        Do i = 1, num
 
-                 this%x(1:dim,i) = &
+           eliminate_particle = .FALSE.
+           IF ( this%id(this%sid_idx,i) == mcf_particle_type_fluid) THEN
+
+              SELECT CASE (accuracy_order)
+
+              CASE (1)
+
+                 new_x(1:dim) = &
                       this%x(1:dim,i) + &
                       this%v(1:dim,i) * dt
 
-              END IF
-              
-           END DO
-           
-        CASE (2)
-           
-           DO i = 1, num
-              
-              IF ( this%id(this%sid_idx,i) == mcf_particle_type_fluid) THEN
+              CASE (2)
 
-                 this%x(1:dim,i) = &
+                 new_x(1:dim) = &
                       this%x(1:dim,i) + &
                       this%v(1:dim,i) * dt  + &
                       0.5_MK * this%f_bp(1:dim,i) * dt**2
 
-              END IF
-              
-           END DO
-           
-           !-------------------------------------------------
-           ! Other integration not available.
-           !-------------------------------------------------
-           
-        CASE DEFAULT
-           PRINT *, "particles_integrate_position : ", &
-                "Order of accuracy not available !"
-           stat_info = -1
-           GOTO 9999
-           
-        END SELECT ! accuracy_order
+                 !-------------------------------------------------
+                 ! Other integration not available.
+                 !-------------------------------------------------
 
+              CASE DEFAULT
+                 PRINT *, "particles_integrate_position : ", &
+                      "Order of accuracy not available !"
+                 stat_info = -1
+                 GOTO 9999
+
+              END SELECT ! accuracy_order
+
+
+              ! getting rid of those buffer particles that have
+              ! unphysical force/velocity/position 
+              IF (mcf_eliminate_non_physical_buffer_particles) THEN
+               
+                 distance = 0.0_MK
+                 patch_id = 0
+                 CALL boundary_check_particle_stat(d_boundary, &
+                      this%x(1:dim, i), 0, distance, patch_id, stat_info_sub)
+                 ! only buffer particles
+                 IF (distance /= 0.0_MK) THEN
+                    DO j = 1, num
+                       IF ((new_x(j) .LT. min_phys(j)) .OR. &
+                            (new_x(j) .GT. max_phys(j))) THEN
+                          ! eliminate
+                          eliminate_particle = .TRUE.
+                          this%id(this%pid_idx, i) = -ABS(this%id(this%pid_idx, i))
+                       END IF
+                       EXIT
+                    END DO
+                 END IF
+
+              END IF
+
+
+              IF (.NOT. eliminate_particle) THEN
+                 this%x(1:dim,i) = new_x(1:dim)
+              END IF
+
+           END IF
+
+        END DO
 
 #endif
         

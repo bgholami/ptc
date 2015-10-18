@@ -57,8 +57,8 @@ SUBROUTINE particles_adjust_particles_special(this,num,stat_info)
 
   stat_info     = 0
   stat_info_sub = 0
-
-
+  
+  
   NULLIFY(d_boundary)
 
   num_create = 0
@@ -88,7 +88,7 @@ SUBROUTINE particles_adjust_particles_special(this,num,stat_info)
   tracers_c_factor = &
        physics_get_tracers_c_factor(this%phys,stat_info_sub)
 #endif
-  
+
 
 
   !----------------------------------------------------
@@ -99,51 +99,60 @@ SUBROUTINE particles_adjust_particles_special(this,num,stat_info)
 
      IF (this%id(this%sid_idx, j) == mcf_particle_type_fluid) THEN
 
-        distance = 0.0_MK
-        patch_id = 0
-        CALL boundary_check_particle_stat(d_boundary, &
-             this%x(1:num_dim, j), 1, distance, patch_id, stat_info_sub)
+        IF ( this%id(this%pid_idx, j) < 0 ) THEN
+
+           ! this one is already marked for deletion
+           num_delete = num_delete + 1
+
+        ELSE
+
+           distance = 0.0_MK
+           patch_id = 0
+           CALL boundary_check_particle_stat(d_boundary, &
+                this%x(1:num_dim, j), 1, distance, patch_id, stat_info_sub)
 
 
-        IF (distance == 0.0_MK) THEN
+           IF (distance == 0.0_MK) THEN
 
-           ! interior
-           IF (this%id(this%bid_idx, j) > 0) THEN 
-              ! former inlet that just entered interior
-              num_create = num_create + 1
-           END IF
+              ! interior
+              IF (this%id(this%bid_idx, j) > 0) THEN 
+                 ! former inlet that just entered interior
+                 num_create = num_create + 1
+              END IF
 
-        ELSE IF (distance > 0.0_MK) THEN
+           ELSE IF (distance > 0.0_MK) THEN
 
-           IF (ABS(distance) <= bwidth) THEN   
+              IF (ABS(distance) <= bwidth) THEN   
 
-              ! inlet
-              ! optional? to cover interiors that come back to inlet buffer...
-              !this%id(this%bid_idx, j) = patch_id
-              CONTINUE
+                 ! inlet
+                 ! optional? to cover interiors that come back to inlet buffer...
+                 !this%id(this%bid_idx, j) = patch_id
+                 CONTINUE
 
-           ELSE
+              ELSE
 
-              ! delete  
-              ! mark with change in id value (delete all in the end)
-              this%id(this%pid_idx, j) = -ABS(this%id(this%pid_idx, j))
-              num_delete = num_delete + 1
+                 ! delete  
+                 ! mark with change in id value (delete all in the end)
+                 this%id(this%pid_idx, j) = -ABS(this%id(this%pid_idx, j))
+                 num_delete = num_delete + 1
 
-           END IF
+              END IF
 
-        ELSE IF (distance < 0.0_MK) THEN
+           ELSE IF (distance < 0.0_MK) THEN
 
-           IF (ABS(distance) <= bwidth) THEN   
+              IF (ABS(distance) <= bwidth) THEN   
 
-              ! outlet
-              this%id(this%bid_idx, j) = patch_id
+                 ! outlet
+                 this%id(this%bid_idx, j) = patch_id
 
-           ELSE
+              ELSE
 
-              ! delete  
-              ! mark with change in id value (delete all in the end)
-              this%id(this%pid_idx, j) = -ABS(this%id(this%pid_idx, j))
-              num_delete = num_delete + 1
+                 ! delete  
+                 ! mark with change in id value (delete all in the end)
+                 this%id(this%pid_idx, j) = -ABS(this%id(this%pid_idx, j))
+                 num_delete = num_delete + 1
+
+              END IF
 
            END IF
 

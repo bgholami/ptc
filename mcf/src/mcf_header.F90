@@ -295,7 +295,13 @@
         !----------------------------------------------------
 
         INTEGER, PARAMETER       :: mcf_wall_rho_type_constant = 0
-        INTEGER, PARAMETER       :: mcf_wall_rho_type_dynamic  = 1
+        INTEGER, PARAMETER       :: mcf_wall_rho_type_dynamic  = 1        
+
+        !----------------------------------------------------
+        ! Capping and elimination of buffer (non-physical) particles
+        !----------------------------------------------------
+
+        LOGICAL, PARAMETER       :: mcf_eliminate_non_physical_buffer_particles = .TRUE.
         
         !----------------------------------------------------
         ! Indices of two cells interacting with each other,
